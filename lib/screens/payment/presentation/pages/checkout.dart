@@ -54,7 +54,7 @@ class Checkout extends StatelessWidget {
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(20),
         color: Colors.white,
-        constraints: BoxConstraints(maxHeight: 220),
+        constraints: BoxConstraints(maxHeight: 250),
         child: Column(
           children: [
             Row(

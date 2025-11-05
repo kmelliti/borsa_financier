@@ -1,0 +1,82 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:borsa_now_bis/core/config/app_constants.dart';
+import 'package:borsa_now_bis/core/config/utils.dart';
+import 'package:borsa_now_bis/core/models/city_model.dart';
+import 'package:borsa_now_bis/core/models/user_model.dart';
+import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AppServices {
+
+  final Dio _dio;
+  final SharedPreferences _prefs;
+
+  AppServices(this._dio, this._prefs);
+
+  Future<void> getCities() async {
+
+    try {
+      final response = await _dio.get(
+        'BorsaNow/public/api/v1/general/cities/${getLang()}',
+      );
+      log("Response cities ${response.data}");
+
+      if (response.statusCode == 200) {
+        cities = lookUpModelFromJson(jsonEncode(response.data['data']));
+      }
+      throw Exception('Failed to load cities');
+    } catch (e,s) {
+      log("$e $s");
+
+      throw Exception('Failed to load cities: $e');
+    }
+  }
+  Future<void> getBanks() async {
+
+    try {
+      final response = await _dio.get(
+        'BorsaNow/public/api/v1/general/banks/${getLang()}',
+      );
+
+
+
+
+      if (response.statusCode == 200) {
+        banks =  lookUpModelFromJson(jsonEncode(response.data['data']));
+      }
+      throw Exception('Failed to load Banks');
+    } catch (e,s) {
+      log("$e $s");
+
+      throw Exception('Failed to load Banks: $e ,$s');
+    }
+  }
+
+  void setUser(UserModel user) {
+    _prefs.setString(spUser, jsonEncode(user.toJson()));
+  }
+
+  void setToken (String token){
+    _prefs.setString(spToken, token);
+  }
+
+  UserModel getUser() {
+    final String user = _prefs.getString(spUser) ?? '';
+    return userModelFromJson(user);
+  }
+  String? getToken() {
+    return _prefs.getString(spToken);
+  }
+  void removeUser() {
+    _prefs.remove(spUser);
+  }
+
+  void removeUserAndToken() {
+    _prefs.clear();
+
+  }
+
+}

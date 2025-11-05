@@ -1,10 +1,13 @@
 import 'dart:ui';
 
+import 'package:borsa_now_bis/core/routes/app_routes.dart';
+import 'package:borsa_now_bis/core/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../di/di.dart';
 import '../theme/app_theme.dart';
 
 extension HexColor on Color {
@@ -79,6 +82,49 @@ Widget getPriceInText(double price,[TextStyle? style,double ?pictureWidth]) {
   );
 }
 
+String getLang ()=>Get.locale?.languageCode ??"en";
+void showErrorDialog(BuildContext context,String error) {
+  Get.dialog(
+    Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 0,
+      child: Container(
+        margin: EdgeInsets.all(20),
+        decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20),),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset("assets/icons/error.svg"),
+            SizedBox(height: 20,),
+            Text("error_title".tr,style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+              fontSize: 20,
+            ),),
+            Text(error,textAlign: TextAlign.center,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: HexColor.fromHex("#717088"),
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+              fontSize: 20,
+            ),),
+            SizedBox(height: 60,),
+            ElevatedButton(onPressed: (){
+
+              Get.back();
+            }, child: Text("ok".tr),style: AppTheme.outlinedButtonStyle,)
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 Widget pushUpAnimation (Widget c){
   return  TweenAnimationBuilder(
     tween: Tween(begin: 0.0, end: 1.0),
@@ -136,6 +182,59 @@ TweenAnimationBuilder<double> buildTitle(String title) {
         ),
       );
     },
+  );
+}
+
+void showLogoutAlert(BuildContext context) {
+  Get.dialog(
+    Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 0,
+      child: Container(
+        margin: EdgeInsets.all(20),
+        decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20),),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset("assets/icons/alert_rect.svg"),
+            SizedBox(height: 20,),
+            Text("logout".tr,style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+              fontSize: 20,
+            ),),
+            Text("alert_logout_body".tr,textAlign: TextAlign.center,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: HexColor.fromHex("#717088"),
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+              fontSize: 20,
+            ),),
+            SizedBox(height: 60,),
+            ElevatedButton(onPressed: (){
+
+              Get.back();
+            }, child: Text("stay_logged_in".tr),style: AppTheme.outlinedButtonStyle,),
+            SizedBox(height: 20,),
+            TextButton(onPressed: (){
+             AuthService authService =  getIt();
+             authService .signOut();
+              Get.offAllNamed(AppRoutes.login);
+            }, child: Text("logout".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: HexColor.fromHex("#E62F29"),
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+              fontSize: 20,
+            ),))
+          ],
+        ),
+      ),
+    ),
   );
 }
 AppBar buildAppBar(BuildContext context) {
@@ -258,4 +357,5 @@ AppBar buildAppBar(BuildContext context) {
       ),
     ],
   );
+
 }

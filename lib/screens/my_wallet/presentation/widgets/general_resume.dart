@@ -124,32 +124,34 @@ class GeneralResume extends StatelessWidget {
   }
 
   Widget _buildTile(BuildContext context,Color color, double amount , String title, String asset) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey))
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(asset),
-          SizedBox(width: 5,),
-          Text(title,style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: HexColor.fromHex(AppTheme.primaryColor),
-            fontSize: 20
-          ),),
-          Spacer(),
-          Text(amount.toString(),style: Theme.of(context).textTheme.titleMedium?.copyWith(
+    return pushUpAnimation(
+        Container(
+        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey))
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(asset),
+            SizedBox(width: 5,),
+            Text(title,style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: HexColor.fromHex(AppTheme.primaryColor),
-              fontWeight: FontWeight.bold,
               fontSize: 20
-          )),
-          SizedBox(width: 5,),
-          SvgPicture.asset("assets/icons/sar.svg", width: 20),
+            ),),
+            Spacer(),
+            Text(amount.toString(),style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: HexColor.fromHex(AppTheme.primaryColor),
+                fontWeight: FontWeight.bold,
+                fontSize: 20
+            )),
+            SizedBox(width: 5,),
+            SvgPicture.asset("assets/icons/sar.svg", width: 20),
 
 
-        ],
+          ],
+        ),
       ),
     );
   }

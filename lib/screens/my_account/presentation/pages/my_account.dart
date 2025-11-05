@@ -66,7 +66,9 @@ class MyAccount extends StatelessWidget {
               SizedBox(height: 20),
               pushUpAnimation(
                  InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    showLogoutAlert(context);
+                  },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 15,vertical: 7),
                     margin: EdgeInsets.symmetric( horizontal: 10),

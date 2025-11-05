@@ -89,7 +89,7 @@ class PersonalIdentity extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+
 
                       Spacer(),
                       ElevatedButton(onPressed: () {}, child: Text("save".tr)),

@@ -11,6 +11,7 @@ import '../../../../core/theme/app_theme.dart';
 class MyDeals extends StatelessWidget {
   const MyDeals({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,51 +47,55 @@ class MyDeals extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: HexColor.fromHex("#E9F0FF"),
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: HexColor.fromHex("#EBEBEB")),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/money_light.svg",
-                            color: HexColor.fromHex(AppTheme.primaryColor),
-                          ),
-                          SizedBox(height: 10),
-                          getPriceInText(534.23),
-                          SizedBox(height: 10),
+                    child: bounceAnimation(c:
+                       Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: HexColor.fromHex("#E9F0FF"),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: HexColor.fromHex("#EBEBEB")),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/money_light.svg",
+                              color: HexColor.fromHex(AppTheme.primaryColor),
+                            ),
+                            SizedBox(height: 10),
+                            getPriceInText(534.23),
+                            SizedBox(height: 10),
 
-                          Text("total_deals".tr),
-                        ],
+                            Text("total_deals".tr),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: HexColor.fromHex("#E6FFFA"),
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: HexColor.fromHex("#EBEBEB")),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/money_bag.svg",
-                            color: HexColor.fromHex(AppTheme.primaryColor),
-                          ),
-                          SizedBox(height: 10),
-                          getPriceInText(534.23),
-                          SizedBox(height: 10),
+                    child: bounceAnimation(c:
+                       Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: HexColor.fromHex("#E6FFFA"),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: HexColor.fromHex("#EBEBEB")),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/money_bag.svg",
+                              color: HexColor.fromHex(AppTheme.primaryColor),
+                            ),
+                            SizedBox(height: 10),
+                            getPriceInText(534.23),
+                            SizedBox(height: 10),
 
-                          Text("total_gains".tr),
-                        ],
+                            Text("total_gains".tr),
+                          ],
+                        ),
                       ),
                     ),
                   ),

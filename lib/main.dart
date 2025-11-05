@@ -1,12 +1,10 @@
-import 'package:borsa_now_bis/screens/payment/presentation/pages/checkout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/root/internacionalization.dart';
-import 'package:borsa_now_bis/splash_screen/splash_screen.dart';
 
 import 'core/config/translations.dart';
 import 'core/di/di.dart';
+import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 
 Future<void> main() async{
@@ -38,7 +36,8 @@ class MyApp extends StatelessWidget {
       fallbackLocale: Locale('ar', 'SA'),
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      initialRoute: AppRoutes.splash,
+      getPages: AppRoutes.routes,
     );
   }
 }

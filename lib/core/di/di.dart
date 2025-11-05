@@ -1,6 +1,11 @@
 import 'package:borsa_now_bis/core/config/dio_inizializer.dart';
+import 'package:borsa_now_bis/core/services/auth_services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../screens/login/presentation/manager/login_controller.dart';
+import '../../screens/sign_up/presentation/controller/sign_up_controller.dart';
+import '../services/app_service.dart';
 
 
 final getIt = GetIt.instance;
@@ -17,5 +22,10 @@ Future<void> setup() async {
   await getIt.allReady();
 
   getIt.registerLazySingleton(()=> DioInitializer.getDio());
+  getIt.registerLazySingleton(()=>AuthService(getIt()));
+  getIt.registerLazySingleton(()=>SignUpController(getIt()));
+  getIt.registerLazySingleton(()=>LoginController(getIt()));
+
+  getIt.registerLazySingleton(()=>AppServices(getIt(),getIt()));
 
 }

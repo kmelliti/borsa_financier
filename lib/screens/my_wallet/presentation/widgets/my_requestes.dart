@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../../core/config/utils.dart';
 import '../../../../core/theme/animated_buttons.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'fund_request.dart';
 
 enum Status { accepted, rejected, pending }
 
@@ -108,7 +109,9 @@ class _MyRequestsState extends State<MyRequests>
         }, child: Text("withdraw".tr)),
         const SizedBox(height: 10),
         AnimatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.to(FundRequest());
+          },
           style: AppTheme.outlinedButtonStyle,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../di/di.dart';
+import '../services/app_service.dart';
 import 'app_constants.dart';
 
 class DioInitializer {
@@ -31,6 +33,9 @@ class DioInitializer {
 
         request.headers.putIfAbsent("Content-Type", () => "application/json");
         request.headers.putIfAbsent("Accept", () => "application/json");
+        //TODO change language
+        final AppServices appServices = getIt();
+        request.queryParameters.putIfAbsent("token", () => appServices.getToken());
         // request.headers.putIfAbsent(
         //   "lang",
         //   () => appController.getAppLanguage() ?? "en",

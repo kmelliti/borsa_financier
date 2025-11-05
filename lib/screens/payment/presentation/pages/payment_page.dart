@@ -18,22 +18,27 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
     {
       'label': 'Apple Pay',
       'logo': 'assets/apple_pay.png',
+      'size':"100"
     },
     {
       'label': 'Samsung Pay',
       'logo': 'assets/samsung_pay.png',
+      'size':"100"
     },
     {
       'label': 'Google Pay',
       'logo': 'assets/google_pay.png',
+      'size':"50"
     },
     {
       'label': 'Borsa Now',
       'logo': 'assets/borsa_now_pay.png',
+      'size':"50"
     },
     {
       'label': 'ادفع بالبطاقة',
       'logo': 'assets/card.png',
+      'size':"50"
     },
   ];
 
@@ -44,28 +49,47 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leadingWidth: 80,
         centerTitle: false,
-        leadingWidth: 70,
-        leading: Container(
-          width: 50,
-          height: 50,
-          padding: EdgeInsets.all(15),
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-          ),
-          child: Center(child: Icon(Icons.arrow_back)),
+        leading: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: Duration(milliseconds: 800),
+          curve: Curves.easeOutBack,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value.clamp(0.0, 1.0),
+              child: Transform.scale(
+                scale: 0.5 + (value * 0.5),
+                child: InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(vertical: 3),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: HexColor.fromHex(AppTheme.primaryColor),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-        title:  Text(
+        title: Text(
           'payment'.tr,
-          style: TextStyle(
-            color: Color(0xff1e1b57),
-            fontWeight: FontWeight.bold,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: HexColor.fromHex(AppTheme.primaryColor),
+            fontWeight: FontWeight.w800,
+            fontSize: 24,
           ),
         ),
-
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -131,10 +155,16 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
                           Expanded(
                             child: Align(
                               alignment: Alignment.centerRight,
-                              child: Image.asset(
-                                method['logo']!,
-                                height: 38,
-                                fit: BoxFit.contain,
+                              child: Container(
+
+
+                                height: 60,
+                                child: Image.asset(
+                                  method['logo']!,
+                                //  width:  double.parse(method['size']!),
+                                  fit: BoxFit.contain
+                                  ,
+                                ),
                               ),
                             ),
                           ),

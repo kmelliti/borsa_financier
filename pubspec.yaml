@@ -41,6 +41,9 @@ dependencies:
   syncfusion_flutter_charts: any
   image_picker: ^1.2.0
   dotted_border: ^3.1.0
+  smooth_page_indicator: ^1.2.1
+  file_picker: ^10.3.3
+
 
 
 
@@ -109,6 +112,9 @@ flutter:
     - assets/icons/upload.svg
     - assets/icons/file.svg
     - assets/icons/logo.svg
+    - assets/icons/check_green.svg
+    - assets/icons/alert_rect.svg
+    - assets/icons/
 
 
 
