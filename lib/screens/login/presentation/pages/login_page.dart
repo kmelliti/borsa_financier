@@ -99,7 +99,7 @@ class LoginPage extends StatelessWidget {
                 child: ValueListenableBuilder(
                   valueListenable: isLoading,
                   builder: (context, value, child) {
-                    return value ? const Center(child: CircularProgressIndicator()) : ElevatedButton(onPressed: () async{
+                    return value ?  Center(child: getLoader()) : ElevatedButton(onPressed: () async{
 
                       if(passwordController.text.isNotEmpty && usernameController.text.isNotEmpty){
                         try{

@@ -3,7 +3,7 @@ import 'package:get/utils.dart';
 
 import '../../../core/config/app_constants.dart';
 import '../../../core/di/di.dart';
-import '../../../core/models/city_model.dart';
+import '../../../core/models/lookup_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../presentation/controller/sign_up_controller.dart';
 

@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/core/config/utils.dart';
-import 'package:borsa_now_bis/core/models/city_model.dart';
+import 'package:borsa_now_bis/core/models/lookup_model.dart';
 import 'package:borsa_now_bis/core/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -26,6 +26,8 @@ class AppServices {
 
       if (response.statusCode == 200) {
         cities = lookUpModelFromJson(jsonEncode(response.data['data']));
+        return;
+
       }
       throw Exception('Failed to load cities');
     } catch (e,s) {
@@ -46,6 +48,7 @@ class AppServices {
 
       if (response.statusCode == 200) {
         banks =  lookUpModelFromJson(jsonEncode(response.data['data']));
+        return;
       }
       throw Exception('Failed to load Banks');
     } catch (e,s) {

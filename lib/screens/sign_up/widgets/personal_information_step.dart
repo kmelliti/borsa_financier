@@ -24,7 +24,9 @@ class PersonalInformationStep extends StatefulWidget {
   State<PersonalInformationStep> createState() => _PersonalInformationStepState();
 }
 
-class _PersonalInformationStepState extends State<PersonalInformationStep> {
+class _PersonalInformationStepState extends State<PersonalInformationStep>
+
+with SingleTickerProviderStateMixin{
   final ValueNotifier<String?> userImage = ValueNotifier(null);
 
   final ImagePicker _picker = ImagePicker();
@@ -42,7 +44,7 @@ class _PersonalInformationStepState extends State<PersonalInformationStep> {
   final _signUpController = getIt<SignUpController>();
 
   String? _gender;
-
+  late final AnimationController controller;
   @override
   void initState() {
 
@@ -54,19 +56,17 @@ class _PersonalInformationStepState extends State<PersonalInformationStep> {
       _gender = _signUpController.accountCreationParams.gender ;
       userImage.value = _signUpController.accountCreationParams.picture ?? null;
     });
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
 
-    // if (_signUpController.signUpData.isNotEmpty) {
-    //   _fullNameController.text = _signUpController.signUpData['name'] ?? '';
-    //   _birthdayController.text = _signUpController.signUpData['birthday'] ?? '';
-    //   _emailController.text = _signUpController.signUpData['email'] ?? '';
-    //   _phoneNumberController.text = _signUpController.signUpData['phone'] ?? '';
-    //   _gender = _signUpController.signUpData['gender'] ;
-    //   WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_){
-    //     userImage.value = _signUpController.signUpData['picture'] ?? null;
-    //
-    //   });
-    // }
     super.initState();
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -88,7 +88,9 @@ class _PersonalInformationStepState extends State<PersonalInformationStep> {
               children: [
                 Center(
                   child: DottedBorder(
+                    animation: controller,
                     options: RoundedRectDottedBorderOptions(
+
                       radius: const Radius.circular(60),
                       dashPattern: const [8, 4],
                       strokeWidth: 1,

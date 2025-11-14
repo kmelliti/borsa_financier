@@ -1,19 +1,30 @@
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
+import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
+import 'package:borsa_now_bis/screens/home_page/presentation/manager/home_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../core/config/bottom_navigator.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/widgets/filters.dart';
 import '../widgets/single_item_shopping_list.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final HomePageController _homePageController = getIt<HomePageController>();
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    late final _pagingController = PagingController<int, DealProductModel>(
+      getNextPageKey:
+          (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+      fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey),
+    );
 
     return Scaffold(
       appBar: buildAppBar(),
@@ -35,7 +46,13 @@ class HomePage extends StatelessWidget {
                       opacity: value,
                       child: Text(
                         "mass_shopping".tr,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        style: Theme
+                            .of(
+                          context,
+                        )
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
                         ),
@@ -54,23 +71,23 @@ class HomePage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Expanded(
-                child: ListView(
-                  children: [
-                    TweenAnimationBuilder(
-                      tween: Tween(begin: 0.0, end: 1.0),
-                      duration: Duration(milliseconds: 1000),
-                      builder: (context, double value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, (1 - value) * 20),
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: SingleItemShoppingList(),
-                    ),
-                  ],
+                child: PagingListener(
+                  controller: _pagingController,
+                  builder: (context, state, fetchNext) {
+                    return PagedListView<int,DealProductModel>(
+
+                      fetchNextPage: fetchNext,
+                      builderDelegate: PagedChildBuilderDelegate(
+                        itemBuilder: (context, item, index) {
+                          return Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              child: pushUpAnimation(SingleItemShoppingList(dealProductModel: item,)));
+                        },
+
+                      ),
+                       state: state,
+                    );
+                  },
                 ),
               ),
             ],
@@ -148,6 +165,23 @@ class HomePage extends StatelessWidget {
                 GestureDetector(
                   onTapDown: (details) {
                     // This will be used for the tap effect
+                    showModalBottomSheet(
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.9,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return Filters();
+                      },
+                    );
                   },
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 1.0, end: 0.0),

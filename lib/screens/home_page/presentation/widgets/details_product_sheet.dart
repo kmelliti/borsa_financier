@@ -6,14 +6,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../core/config/app_constants.dart';
 import '../../../../core/config/bottom_navigator.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../payment/presentation/pages/payment_page.dart';
+import '../../data/models/deal_product_model.dart';
 
 class DetailsProductSheet extends StatelessWidget {
-  DetailsProductSheet({super.key});
+  DetailsProductSheet({super.key, required this.dealProductModel});
+  final DealProductModel dealProductModel;
 
-  final List<String> images = ["assets/icons/aa1.png", "assets/icons/a2.png"];
+
   final ValueNotifier<int> sliderIndex = ValueNotifier(0);
 
   @override
@@ -54,13 +57,13 @@ class DetailsProductSheet extends StatelessWidget {
                         sliderIndex.value = currentIndex;
                       },
                       children:
-                          images.map((im) {
+                          dealProductModel.product.productPictures.map((im) {
                             return Container(
-                              padding: EdgeInsets.symmetric(vertical: 20),
+                              // padding: EdgeInsets.symmetric(vertical: 20),
                               decoration: BoxDecoration(
                                 color: HexColor.fromHex("#EFEFE3"),
                               ),
-                              child: Center(child: Image.asset(im, height: 200)),
+                              child: Center(child: Image.network("${baseUrlImage}${im.picture}",fit: BoxFit.cover,)),
                             );
                           }).toList(),
                     ),
@@ -143,14 +146,14 @@ class DetailsProductSheet extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:
-                            images.map((im) {
+                            dealProductModel.product.productPictures.map((im) {
                               return Container(
                                 width: 10,
                                 height: 10,
                                 margin: EdgeInsets.symmetric(horizontal: 3),
                                 decoration: BoxDecoration(
                                   color:
-                                      images[index] == im
+                                      dealProductModel.product.productPictures[index] == im
                                           ? HexColor.fromHex(
                                             AppTheme.primaryColor,
                                           )
@@ -174,7 +177,7 @@ class DetailsProductSheet extends StatelessWidget {
                 children: [
                   SizedBox(height: 10),
                   Text(
-                    "ماتشا كريم فرابوتشينو",
+                    dealProductModel.product.name,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
@@ -185,9 +188,9 @@ class DetailsProductSheet extends StatelessWidget {
                   SizedBox(height: 20),
                   Row(
                     children: [
-                      getPriceInText(10.00),
+                      getPriceInText(double.parse(dealProductModel.wholesalePrice)),
                       SizedBox(width: 10),
-                      getDiscountedPriceInText(20.00),
+                      getDiscountedPriceInText(double.parse(dealProductModel.retailPrice)),
                       SizedBox(width: 10),
 
                       Hero(
@@ -203,7 +206,7 @@ class DetailsProductSheet extends StatelessWidget {
                           ),
 
                           child: Text(
-                            "50%-",
+                            "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).ceil().toString()} %-",
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium?.copyWith(
@@ -218,8 +221,8 @@ class DetailsProductSheet extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   ReadMoreText(
-                    'مشروب بارد ومنعش يجمع بين نكهة الشاي الأخضر الياباني ماتشا والكريمة المخفوقة الغنية، ليمنحك لحظة استرخاء بطعم فريد. مثالي لعشاق النكهات مشروب بارد ومنعش يجمع بين نكهة الشاي الأخضر الياباني ماتشا والكريمة المخفوقة الغنية، ليمنحك لحظة استرخاء بطعم فريد. مثالي لعشاق النكهات ',
-                    trimMode: TrimMode.Line,
+                    dealProductModel.product.description,
+                  trimMode: TrimMode.Line,
                     trimLines: 2,
                     colorClickableText: Colors.pink,
                     trimCollapsedText: 'show_more'.tr,
@@ -319,7 +322,7 @@ class DetailsProductSheet extends StatelessWidget {
               itemBuilder: (c,i){
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: SingleItemShoppingList(),
+                  child: SingleItemShoppingList(dealProductModel: dealProductModel,),
                 );
               },
             ),

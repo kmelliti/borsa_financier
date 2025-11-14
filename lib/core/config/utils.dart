@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:borsa_now_bis/core/routes/app_routes.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../di/di.dart';
 import '../theme/app_theme.dart';
@@ -63,7 +65,24 @@ Widget getDiscountedPriceInText(double price) {
     ],
   );
 }
+Future<Color> getDominantColor(String url) async {
 
+  ColorScheme scheme = await ColorScheme.fromImageProvider(provider: Image.network(url).image);
+  return scheme.primaryContainer;
+
+
+}
+double getPercentage (double wholeSale , double retail){
+  log("Whole $wholeSale ${retail}");
+  return  (retail / wholeSale) * 100;
+
+}
+Widget getLoader(){
+  return LoadingAnimationWidget.threeArchedCircle(
+    color: HexColor.fromHex(AppTheme.primaryColor),
+    size: 40,
+  );
+}
 Widget getPriceInText(double price,[TextStyle? style,double ?pictureWidth]) {
   return Row(
     children: [
@@ -83,6 +102,8 @@ Widget getPriceInText(double price,[TextStyle? style,double ?pictureWidth]) {
 }
 
 String getLang ()=>Get.locale?.languageCode ??"en";
+
+
 void showErrorDialog(BuildContext context,String error) {
   Get.dialog(
     Dialog(

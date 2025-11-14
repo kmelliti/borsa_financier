@@ -1,4 +1,4 @@
-import 'package:borsa_now_bis/core/models/city_model.dart';
+import 'package:borsa_now_bis/core/models/lookup_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 

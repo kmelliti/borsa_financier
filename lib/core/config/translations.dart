@@ -153,6 +153,13 @@ class AppTranslation extends Translations {
       "exit_without_saving":"أخرج بدون حفظ",
       "alert_logout_body":"هل إنت متأكد من تسجيل الخروج؟",
       "stay_logged_in":"إلغاء تسجيل الخروج",
+      "price_range":"نطاق السعر",
+      "available_quantity":"الكمية المتوفرة",
+      "min_req_quantity":"الحد الأدنى للطلب",
+      "applied_discount_products":"منتجات عليها خصم",
+      "apply_filers":"تطبيق الفلاتر",
+      "reset_filters":"إعادة تعيين الفلاتر",
+      "category":"الفئة"
 
 
     },

@@ -5,11 +5,14 @@ import 'package:flutter_rating/flutter_rating.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/config/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../payment/presentation/pages/checkout.dart';
+import '../../data/models/deal_product_model.dart';
 
 class SingleItemShoppingList extends StatelessWidget {
-  const SingleItemShoppingList({super.key});
+  const SingleItemShoppingList({super.key, required this.dealProductModel});
+  final DealProductModel dealProductModel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class SingleItemShoppingList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "ماتشا كريم فرابوتشينو",
+                  dealProductModel.product.name,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -40,9 +43,9 @@ class SingleItemShoppingList extends StatelessWidget {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    getPriceInText(10.00),
+                    getPriceInText(double.parse(dealProductModel.wholesalePrice)),
                     SizedBox(width: 10),
-                    getDiscountedPriceInText(20.00),
+                    getDiscountedPriceInText(double.parse(dealProductModel.retailPrice)),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -60,7 +63,7 @@ class SingleItemShoppingList extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "1000",
+                        dealProductModel.quantity.toString(),
                         style: TextStyle(
                           color: HexColor.fromHex("#5E5D68"),
                           fontSize: 16,
@@ -86,7 +89,7 @@ class SingleItemShoppingList extends StatelessWidget {
                       SizedBox(width: 10),
 
                       Text(
-                        "1000",
+                        dealProductModel.minInvestment.toString(),
                         style: TextStyle(
                           color: HexColor.fromHex("#5E5D68"),
                           fontSize: 16,
@@ -101,7 +104,7 @@ class SingleItemShoppingList extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(DetailsProductSheet());
+                          Get.to(DetailsProductSheet(dealProductModel: dealProductModel));
                         },
                         child: Text("details".tr),
                         style: AppTheme.outlinedButtonStyle,
@@ -135,15 +138,25 @@ class SingleItemShoppingList extends StatelessWidget {
         Hero(
           tag: "a1",
 
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            decoration: BoxDecoration(
-              color: HexColor.fromHex("#EFEFE3"),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: Image.asset("assets/icons/aa1.png", height: 200),
-            ),
+          child: FutureBuilder(
+            future: getDominantColor("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}"),
+            builder: (context,snap) {
+              return Container(
+
+
+                decoration: BoxDecoration(
+
+                  color: snap.data,
+                  //color: HexColor.fromHex("#EFEFE3"),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Center(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.network("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",fit: BoxFit.fill,)),
+                ),
+              );
+            }
           ),
         ),
         Positioned(
@@ -159,7 +172,7 @@ class SingleItemShoppingList extends StatelessWidget {
               ),
 
               child: Text(
-                "50%-",
+                "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).ceil().toString()}% -",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
