@@ -4,13 +4,15 @@
 
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 List<LookUpModel> lookUpModelFromJson(String str) => List<LookUpModel>.from(json.decode(str).map((x) => LookUpModel.fromJson(x)));
 
 String lookUpModelToJson(List<LookUpModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class LookUpModel {
-  int id;
-  String name;
+class LookUpModel extends Equatable{
+  final int id;
+  final String name;
 
   LookUpModel({
     required this.id,
@@ -26,4 +28,7 @@ class LookUpModel {
     "id": id,
     "name": name,
   };
+
+  @override
+  List<Object?> get props => [id, name];
 }

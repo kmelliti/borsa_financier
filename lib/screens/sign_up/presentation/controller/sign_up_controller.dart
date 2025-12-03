@@ -58,9 +58,9 @@ class SignUpController {
               ),),
               Text("account_created_body".tr,textAlign: TextAlign.center,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: HexColor.fromHex("#717088"),
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
-                fontSize: 20,
+                fontSize: 16,
               ),),
               SizedBox(height: 60,),
               ElevatedButton(onPressed: (){

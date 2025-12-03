@@ -1,5 +1,5 @@
 import 'package:borsa_now_bis/core/config/utils.dart';
-import 'package:borsa_now_bis/screens/home_page/presentation/widgets/details_product_sheet.dart';
+import 'package:borsa_now_bis/screens/home_page/presentation/widgets/deal_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:get/get.dart';
@@ -10,9 +10,12 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../payment/presentation/pages/checkout.dart';
 import '../../data/models/deal_product_model.dart';
 
+typedef OnDetailsClicked = void Function();
 class SingleItemShoppingList extends StatelessWidget {
-  const SingleItemShoppingList({super.key, required this.dealProductModel});
+  const SingleItemShoppingList({super.key, required this.dealProductModel,  this.isRelatedItem = false, this.onDetailsClicked});
   final DealProductModel dealProductModel;
+  final bool isRelatedItem ;
+  final OnDetailsClicked? onDetailsClicked ;
 
   @override
   Widget build(BuildContext context) {
@@ -49,62 +52,57 @@ class SingleItemShoppingList extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 10),
-                Hero(
-                  tag: "available_pcs",
-                  child: Row(
-                    children: [
-                      Text(
-                        "available_pcs".tr,
-                        style: GoogleFonts.cairo(
-                          color: HexColor.fromHex("#1E1D33"),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
+                Row(
+                  children: [
+                    Text(
+                      "available_pcs".tr,
+                      style: GoogleFonts.cairo(
+                        color: HexColor.fromHex("#1E1D33"),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                        dealProductModel.quantity.toString(),
-                        style: TextStyle(
-                          color: HexColor.fromHex("#5E5D68"),
-                          fontSize: 16,
-                        ),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      dealProductModel.quantity.toString(),
+                      style: TextStyle(
+                        color: HexColor.fromHex("#5E5D68"),
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
 
-                Hero(
-                  tag: "min_quantity",
-                  child: Row(
-                    children: [
-                      Text(
-                        "min_quantity".tr,
-                        style: GoogleFonts.cairo(
-                          color: HexColor.fromHex("#1E1D33"),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
+                Row(
+                  children: [
+                    Text(
+                      "min_quantity".tr,
+                      style: GoogleFonts.cairo(
+                        color: HexColor.fromHex("#1E1D33"),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
-                      SizedBox(width: 10),
+                    ),
+                    SizedBox(width: 10),
 
-                      Text(
-                        dealProductModel.minInvestment.toString(),
-                        style: TextStyle(
-                          color: HexColor.fromHex("#5E5D68"),
-                          fontSize: 16,
-                        ),
+                    Text(
+                      dealProductModel.minInvestment.toString(),
+                      style: TextStyle(
+                        color: HexColor.fromHex("#5E5D68"),
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
                 Row(
                   children: [
-                    Expanded(
+        Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(DetailsProductSheet(dealProductModel: dealProductModel));
+
+                          isRelatedItem ? onDetailsClicked!() : Get.to(DealDetails(dealModel: dealProductModel));
                         },
                         child: Text("details".tr),
                         style: AppTheme.outlinedButtonStyle,
@@ -135,29 +133,25 @@ class SingleItemShoppingList extends StatelessWidget {
   Stack header(BuildContext context) {
     return Stack(
       children: [
-        Hero(
-          tag: "a1",
-
-          child: FutureBuilder(
-            future: getDominantColor("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}"),
-            builder: (context,snap) {
-              return Container(
+        FutureBuilder(
+          future: getDominantColor("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}"),
+          builder: (context,snap) {
+            return Container(
 
 
-                decoration: BoxDecoration(
+              decoration: BoxDecoration(
 
-                  color: snap.data,
-                  //color: HexColor.fromHex("#EFEFE3"),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Center(
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image.network("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",fit: BoxFit.fill,)),
-                ),
-              );
-            }
-          ),
+                color: snap.data,
+                //color: HexColor.fromHex("#EFEFE3"),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.network("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",fit: BoxFit.fill,)),
+              ),
+            );
+          }
         ),
         Positioned(
           top: 20,
@@ -172,7 +166,7 @@ class SingleItemShoppingList extends StatelessWidget {
               ),
 
               child: Text(
-                "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).ceil().toString()}% -",
+                "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).toString()}% ",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,

@@ -1,3 +1,4 @@
+import 'package:borsa_now_bis/core/routes/app_routes.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/personal_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,23 +46,23 @@ class MyAccount extends StatelessWidget {
               ),
               SizedBox(height: 20),
               generalContainer(context,"personal_info".tr, "assets/icons/my_account.svg",(){
-                Get.to(PersonalInfo());
+                Get.toNamed(AppRoutes.personalInfo);
               }),
               SizedBox(height: 10),
               generalContainer(context,"address".tr, "assets/icons/pin.svg",(){
-                Get.to(Address());
+                Get.toNamed(AppRoutes.address);
               }),
               SizedBox(height: 10),
               generalContainer(context,"identity_info".tr, "assets/icons/badge.svg",(){
-                Get.to(PersonalIdentity());
+                Get.toNamed(AppRoutes.personalIdentity);
               }),
               SizedBox(height: 10),
               generalContainer(context,"bank_info".tr, "assets/icons/bank.svg",(){
-                Get.to(BankInfo());
+                Get.toNamed(AppRoutes.bankInfo);
               }),
               SizedBox(height: 10),
               generalContainer(context,"password".tr, "assets/icons/key.svg",(){
-                Get.to(PasswordPage());
+                Get.toNamed(AppRoutes.password);
               }),
               SizedBox(height: 20),
               pushUpAnimation(

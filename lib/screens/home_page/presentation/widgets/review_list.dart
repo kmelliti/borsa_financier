@@ -1,13 +1,43 @@
+import 'dart:developer';
+
+import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/core/config/utils.dart';
+import 'package:borsa_now_bis/core/di/di.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
+import 'package:borsa_now_bis/screens/home_page/data/models/review_response_model.dart';
+import 'package:borsa_now_bis/screens/home_page/presentation/widgets/rate_product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class ReviewList extends StatelessWidget {
-  const ReviewList({super.key});
+import '../../../../core/config/time_ago.dart';
+import '../manager/home_page_controller.dart';
 
+class ReviewList extends StatefulWidget {
+  const ReviewList({super.key, required this.productId});
+  final String productId;
+
+  @override
+  State<ReviewList> createState() => _ReviewListState();
+}
+
+class _ReviewListState extends State<ReviewList> {
+  final HomePageController _homePageController = getIt();
+  List<ReviewModel> reviews = [];
+
+  @override
+  void initState() {
+    log(widget.productId);
+    _homePageController.getReviews(widget.productId).then((value) {
+
+      setState(() {
+        reviews = value.reviews;
+      });
+
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -17,30 +47,53 @@ class ReviewList extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           shrinkWrap: true,
-          itemCount: 2,
-          itemBuilder: (context, index) => singleReview(context),
+          itemCount: reviews.length,
+          itemBuilder: (context, index) => singleReview(context,reviews[index]),
         ),
-        SizedBox(height: 10),
 
-        InkWell(
-          onTap: () {},
-          child: Text(
-            "show_more".tr,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: HexColor.fromHex(AppTheme.primaryColor),
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
+
+       reviews.isNotEmpty ? Container(
+          margin: EdgeInsets.only(top: 10,bottom: 20),
+          child: InkWell(
+            onTap: () {},
+            child: Text(
+              "show_more".tr,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: HexColor.fromHex(AppTheme.primaryColor),
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        commentHolder(),
+        ): SizedBox(height: 20,),
+
+        InkWell(
+            onTap: () async {
+             ReviewModel? review = await  showModalBottomSheet(context: context,
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  builder: (c){
+
+                return RateProductWidget(productId: widget.productId,);
+              });
+             if(review != null){
+               setState(() {
+                 reviews.add(review);
+               });
+             }
+            },
+            child: commentHolder()),
 
       ],
     );
   }
 
-  Container singleReview(BuildContext context) {
+  Container singleReview(BuildContext context,ReviewModel review) {
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -57,16 +110,16 @@ class ReviewList extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
+                "$baseUrlImage/${review.user.picture}",
               ),
             ),
-            title: Text("عبدالله_السعودي"),
+            title: Text(review.user.name),
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [StarRating(rating: 4, size: 20)],
+              children: [StarRating(rating: review.rate.toDouble(), size: 20)],
             ),
             trailing: Text(
-              "منذ شهر",
+              TimeAgo.since(review.createdAt),
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: HexColor.fromHex(AppTheme.darkGrey),
               ),
@@ -74,7 +127,7 @@ class ReviewList extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Text(
-            "القهوة هنا لذيذة جدًا، أحببت النكهة الغنية والكراميل مع القهوة 😍",
+            review.comment,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: HexColor.fromHex('#1E1D33'),
               letterSpacing: 0.2,
@@ -99,6 +152,7 @@ class ReviewList extends StatelessWidget {
           SizedBox(
             width: 200,
             child: TextField(
+              enabled: false,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "write_comment".tr,

@@ -1,3 +1,4 @@
+import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/edit_address.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/edit_personal_info.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,26 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/config/utils.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/theme/app_theme.dart';
 
-class Address extends StatelessWidget {
+class Address extends StatefulWidget {
   const Address({super.key});
 
+  @override
+  State<Address> createState() => _AddressState();
+}
+
+class _AddressState extends State<Address> {
+  late UserModel user;
+
+  late AppServices _appController = getIt();
+  @override
+  void initState() {
+    user = _appController.getUser();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,7 +253,7 @@ class Address extends StatelessWidget {
                       ),
                     ),
                     Divider(color: HexColor.fromHex("#CDCCE0"), thickness: 1.5),
-                    
+
                     SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -284,15 +300,20 @@ class Address extends StatelessWidget {
 
             Spacer(),
             ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
+              onPressed: () async{
+                UserModel? newUser = await showModalBottomSheet(
                     isScrollControlled: true,
                     showDragHandle: true,
                     context: context, builder: (c){
-                  return EditAddress(
+                  return EditAddress(user: user,
 
                   );
                 });
+                if(newUser != null){
+                  setState(() {
+                    user = newUser;
+                  });
+                }
               },
               style: AppTheme.outlinedButtonStyle,
               child: Row(
@@ -316,6 +337,4 @@ class Address extends StatelessWidget {
       ),
     );
   }
-
-
 }

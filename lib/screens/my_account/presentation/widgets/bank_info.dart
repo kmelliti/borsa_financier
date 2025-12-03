@@ -18,32 +18,32 @@ class BankInfo extends StatelessWidget {
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            pushUpAnimation(
-              Row(
-                children: [
-                  SvgPicture.asset("assets/icons/bank.svg"),
-                  const SizedBox(width: 20),
-                  Text(
-                    "bank_info".tr,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              pushUpAnimation(
+                Row(
+                  children: [
+                    SvgPicture.asset("assets/icons/bank.svg"),
+                    const SizedBox(width: 20),
+                    Text(
+                      "bank_info".tr,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: bounceAnimation(
+              const SizedBox(height: 20),
+              bounceAnimation(
                 c: EditBankInfo(),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

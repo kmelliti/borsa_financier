@@ -13,6 +13,7 @@ class DealProductModel {
   int merchantId;
   int productId;
   int quantity;
+  int quantitySold;
   String wholesalePrice;
   String retailPrice;
   dynamic minInvestment;
@@ -36,6 +37,7 @@ class DealProductModel {
     required this.merchantId,
     required this.productId,
     required this.quantity,
+    required this.quantitySold,
     required this.wholesalePrice,
     required this.retailPrice,
     required this.minInvestment,
@@ -60,6 +62,7 @@ class DealProductModel {
     merchantId: json["merchant_id"],
     productId: json["product_id"],
     quantity: json["quantity"],
+    quantitySold: json["quantity_sold"],
     wholesalePrice: json["wholesale_price"],
     retailPrice: json["retail_price"],
     minInvestment: json["min_investment"],
@@ -84,6 +87,7 @@ class DealProductModel {
     "merchant_id": merchantId,
     "product_id": productId,
     "quantity": quantity,
+    "quantity_sold": quantitySold,
     "wholesale_price": wholesalePrice,
     "retail_price": retailPrice,
     "min_investment": minInvestment,

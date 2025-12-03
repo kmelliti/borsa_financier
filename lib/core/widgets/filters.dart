@@ -1,12 +1,23 @@
+import 'dart:collection';
+
 import 'package:borsa_now_bis/core/config/utils.dart';
+import 'package:borsa_now_bis/core/models/lookup_model.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating/flutter_rating.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../di/di.dart';
+import '../services/app_service.dart';
+
+typedef FilterCallback = void Function(Map<String, dynamic> filters);
+
 class Filters extends StatefulWidget {
-  const Filters({super.key});
+  const Filters({super.key, required this.onFilter});
+
+  final FilterCallback onFilter;
 
   @override
   State<Filters> createState() => _FiltersState();
@@ -14,29 +25,34 @@ class Filters extends StatefulWidget {
 
 class _FiltersState extends State<Filters> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  List<String> items = [];
+  List<LookUpModel> itemsCategory = [];
   RangeValues _currentPriceRangeValues = const RangeValues(0, 100);
   RangeValues _quantityRangeValues = const RangeValues(0, 50);
   RangeValues _reqQuantityRangeValues = const RangeValues(0, 20);
   bool discounted = false;
-  String? selectedCategory;
+  List<LookUpModel> selectedCategory = [];
+  final ValueNotifier<HashSet<int>> rates = ValueNotifier(HashSet());
+  final AppServices appServices = getIt();
 
   @override
   void initState() {
-    // TODO: implement initState
+    rates.value.add(5);
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
-      addItems();
+
+    appServices.getProductCategories().then((v){
+      Future.delayed(Duration(milliseconds: 300), () {
+        addItems(v);
+      });
     });
   }
 
-  void addItems() {
-    List<String> newItems = ["Apple", "Banana", "Orange", "Mango"];
+  void addItems(List<LookUpModel> newItems) {
+
 
     for (int i = 0; i < newItems.length; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
-        items.add(newItems[i]);
-        _listKey.currentState!.insertItem(items.length - 1);
+        itemsCategory.add(newItems[i]);
+        _listKey.currentState!.insertItem(itemsCategory.length - 1);
       });
     }
   }
@@ -45,18 +61,22 @@ class _FiltersState extends State<Filters> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: getBottomNavigation(),
-      body: Column(
-        children: [
-          priceRange(),
-          SizedBox(height: 10),
-          quantityRange(),
-          SizedBox(height: 10),
-          _reqQuantityRange(),
-          SizedBox(height: 10),
-          getDiscounted(),
-          SizedBox(height: 30),
-          getCategoryFilter(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            priceRange(),
+            SizedBox(height: 10),
+            quantityRange(),
+            SizedBox(height: 10),
+            _reqQuantityRange(),
+            SizedBox(height: 10),
+            getDiscounted(),
+            SizedBox(height: 30),
+            getCategoryFilter(),
+            SizedBox(height: 30),
+            pushUpAnimation(getUserRatings()),
+          ],
+        ),
       ),
     );
   }
@@ -307,7 +327,23 @@ class _FiltersState extends State<Filters> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: () {}, child: Text("apply_filers".tr)),
+
+          ElevatedButton(onPressed: () {
+            Map<String,dynamic> filters = {
+              "quantity_min":_quantityRangeValues.start,
+              "quantity_max":_quantityRangeValues.end,
+              "price_max":_currentPriceRangeValues.end,
+              "price_min":_currentPriceRangeValues.start,
+              "invest_min":_reqQuantityRangeValues.start,
+              "invest_max":_reqQuantityRangeValues.end,
+              "discount":discounted ? 1 :0,
+              "rates":rates.value.map((r)=>r).toList(),
+              "categories":selectedCategory.map((e) => e.id).toList(),
+            };
+            widget.onFilter(filters);
+            Get.back();
+
+          }, child: Text("apply_filers".tr)),
           TextButton(
             onPressed: () {},
             child: Text(
@@ -347,7 +383,7 @@ class _FiltersState extends State<Filters> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               key: _listKey,
-              initialItemCount: items.length,
+              initialItemCount: itemsCategory.length,
               itemBuilder: (context, index, animation) {
                 return SizeTransition(
                   sizeFactor: animation,
@@ -356,7 +392,7 @@ class _FiltersState extends State<Filters> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
                       color:
-                          selectedCategory == items[index]
+                          selectedCategory.contains(itemsCategory[index])
                               ? HexColor.fromHex("#DEDDFF")
                               : Colors.white,
                       border: Border.all(
@@ -368,15 +404,19 @@ class _FiltersState extends State<Filters> {
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          selectedCategory = items[index];
+                          if(selectedCategory.contains(itemsCategory[index]))
+                          selectedCategory.remove(itemsCategory[index]);
+                          else
+                          selectedCategory.add(itemsCategory[index]);
                         });
                       },
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(items[index]),
-                            selectedCategory == items[index]
+                            Text(itemsCategory[index].name),
+                            SizedBox(width: selectedCategory.contains(itemsCategory[index]) ?10:0,),
+                            selectedCategory.contains(itemsCategory[index])
                                 ? Icon(
                                   Icons.check,
                                   color: HexColor.fromHex(
@@ -392,6 +432,72 @@ class _FiltersState extends State<Filters> {
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getUserRatings() {
+    return Container(
+
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "user_ratings".tr,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: HexColor.fromHex("#1E1D33"),
+              fontSize: 16,
+            ),
+          ),
+
+          SizedBox(height: 20),
+          ValueListenableBuilder(
+            valueListenable: rates,
+            builder: (context,r,_) {
+              return GridView.builder(
+                itemCount: 5,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0,
+                  childAspectRatio: 3
+                ),
+                shrinkWrap: true,
+                itemBuilder: (c, i) {
+                  return Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          HashSet<int> set = HashSet.from(rates.value);
+                          set.contains(i+1) ? set.remove(i+1) : set.add(i+1);
+                          rates.value = HashSet.from(set);
+                        },
+                        child: Container(
+                          height: 50,
+                          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          decoration: BoxDecoration(
+                            color: rates.value.contains(i+1) ? HexColor.fromHex(AppTheme.primaryColor) : Colors.white,
+                            border: rates.value.contains(i+1) ? Border.all(color: HexColor.fromHex(AppTheme.primaryColor)) : Border.all(color: HexColor.fromHex(AppTheme.textFieldBorder)),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: StarRating(
+                            allowHalfRating: true,
+                            starCount: 5,
+                            size: 25,
+                            rating: i+1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           ),
         ],
       ),

@@ -44,11 +44,29 @@ class AppServices {
       );
 
 
-
-
       if (response.statusCode == 200) {
         banks =  lookUpModelFromJson(jsonEncode(response.data['data']));
         return;
+      }
+      throw Exception('Failed to load Banks');
+    } catch (e,s) {
+      log("$e $s");
+
+      throw Exception('Failed to load Banks: $e ,$s');
+    }
+  }
+
+  Future<List<LookUpModel>> getProductCategories() async {
+
+    try {
+      final response = await _dio.get(
+        'BorsaNow/public/api/v1/general/product/categories/${getLang()}',
+      );
+
+
+      if (response.statusCode == 200) {
+        return lookUpModelFromJson(jsonEncode(response.data['data']));
+
       }
       throw Exception('Failed to load Banks');
     } catch (e,s) {

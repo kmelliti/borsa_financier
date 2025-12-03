@@ -2,6 +2,7 @@ import 'package:borsa_now_bis/core/config/bottom_navigator.dart';
 import 'package:borsa_now_bis/screens/home_page/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/config/app_constants.dart';
 import '../../../my_account/presentation/pages/my_account.dart';
 import '../../../my_deals/presentation/pages/my_deals.dart';
 import '../../../my_wallet/presentation/pages/my_wallet.dart';
@@ -9,7 +10,7 @@ import '../../../my_wallet/presentation/pages/my_wallet.dart';
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
 
-  final ValueNotifier<int> indexWidget = ValueNotifier(0);
+
 
 
   @override

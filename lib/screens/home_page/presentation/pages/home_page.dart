@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
@@ -17,17 +19,24 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final HomePageController _homePageController = getIt<HomePageController>();
-
+  ValueNotifier<Map<String,dynamic>?> filters = ValueNotifier(null);
+  late final _pagingController = PagingController<int, DealProductModel>(
+    getNextPageKey:
+        (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey,filters.value),
+  );
   @override
   Widget build(BuildContext context) {
-    late final _pagingController = PagingController<int, DealProductModel>(
-      getNextPageKey:
-          (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
-      fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey),
-    );
+
 
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context,null,(v){
+        log("$v");
+        filters.value = {
+          "product_name":v
+        };
+        _pagingController.refresh();
+      }),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.all(20),
@@ -140,7 +149,7 @@ class HomePage extends StatelessWidget {
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
-                              ),
+                              ).applyDefaults(Theme.of(context).inputDecorationTheme),
                             ),
                           ),
                         ),
@@ -162,56 +171,102 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10),
-                GestureDetector(
-                  onTapDown: (details) {
-                    // This will be used for the tap effect
-                    showModalBottomSheet(
-                      showDragHandle: true,
-                      isScrollControlled: true,
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.9,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      context: context,
-                      builder: (context) {
-                        return Filters();
-                      },
-                    );
-                  },
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 1.0, end: 0.0),
-                    duration: Duration(milliseconds: 1500),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: 1.0 + (value * 0.1),
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: HexColor.fromHex(AppTheme.filledBox),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: HexColor.fromHex(AppTheme.borderGrey),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: HexColor.fromHex(
-                                  AppTheme.primaryColor,
-                                ).withOpacity(0.2 * (1 - value)),
-                                spreadRadius: 2 * (1 - value),
-                                blurRadius: 6 * (1 - value),
-                              ),
-                            ],
+                ValueListenableBuilder(
+                  valueListenable: filters,
+                  builder: (context,f,_) {
+                    return GestureDetector(
+                      onTapDown: (details) {
+                        // This will be used for the tap effect
+                        if(f!= null){
+                          filters.value = null;
+                          return;
+                        }
+                        showModalBottomSheet(
+                          showDragHandle: true,
+                          isScrollControlled: true,
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.9,
                           ),
-                          child: SvgPicture.asset("assets/icons/filters.svg"),
-                        ),
-                      );
-                    },
-                  ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          context: context,
+                          builder: (context) {
+                            return Filters(onFilter: (Map<String, dynamic> f) {
+                              filters.value = f;
+                              _pagingController.refresh();
+                            },);
+                          },
+                        );
+                      },
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 1.0, end: 0.0),
+                        duration: Duration(milliseconds: 1500),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: 1.0 + (value * 0.1),
+                            child:f != null ? Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                              decoration: BoxDecoration(
+                                color: HexColor.fromHex(AppTheme.primaryColor),
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(
+                                  color: HexColor.fromHex(AppTheme.borderGrey),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: HexColor.fromHex(
+                                      AppTheme.primaryColor,
+                                    ).withOpacity(0.2 * (1 - value)),
+                                    spreadRadius: 2 * (1 - value),
+                                    blurRadius: 6 * (1 - value),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${"reset_filters".tr}",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyLarge?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  SvgPicture.asset("assets/icons/filters.svg",color: Colors.white,),
+                                ],
+                              ),
+                            ):Container(
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: HexColor.fromHex(AppTheme.filledBox),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: HexColor.fromHex(AppTheme.borderGrey),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: HexColor.fromHex(
+                                      AppTheme.primaryColor,
+                                    ).withOpacity(0.2 * (1 - value)),
+                                    spreadRadius: 2 * (1 - value),
+                                    blurRadius: 6 * (1 - value),
+                                  ),
+                                ],
+                              ),
+                              child: SvgPicture.asset("assets/icons/filters.svg"),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
                 ),
               ],
             ),
@@ -221,123 +276,5 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
-      elevation: 0,
-      leadingWidth: 120,
-      leading: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 800),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Opacity(
-            opacity: value.clamp(0.0, 1.0),
-            child: Transform.scale(
-              scale: 0.5 + (value * 0.5),
-              child: Hero(
-                tag: "a2",
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      actions: [
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 600),
-          curve: Curves.easeOutBack,
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, (1 - value) * 20),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: Hero(
-                  tag: "a4",
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: HexColor.fromHex(AppTheme.borderGrey),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset("assets/icons/search.svg"),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 800),
-          curve: Curves.easeOutBack,
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, (1 - value) * 20),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: Hero(
-                  tag: "a3",
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: HexColor.fromHex(AppTheme.borderGrey),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          "assets/icons/notifications.svg",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
+
 }

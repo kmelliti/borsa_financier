@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/di/di.dart';
+import 'package:borsa_now_bis/core/exception/api_exception.dart';
 import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:dio/dio.dart';
 
@@ -33,7 +34,7 @@ class AuthService{
       );
       print("Data ${response.data} ");
       if(response.data["result"] == false){
-        throw Exception();
+        throw ApiException(response.data["message"]);
       }
 
       return response.data;
@@ -62,8 +63,9 @@ class AuthService{
 
 
       return await getUser();
-    } catch (e) {
+    } catch (e,s) {
 
+      log("$s");
       throw e;
     }
   }
@@ -84,8 +86,8 @@ class AuthService{
 
       appServices.setUser(userModelFromJson(jsonEncode(response.data['data'])));
       return userModelFromJson(jsonEncode(response.data['data']));
-    } catch (e) {
-
+    } catch (e,s) {
+      log("$s");
       throw e;
     }
   }

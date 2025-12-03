@@ -3,6 +3,9 @@ import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/di/di.dart';
+import '../manager/my_account_controller.dart';
+
 class PasswordPage extends StatefulWidget {
   const PasswordPage({super.key});
 
@@ -18,6 +21,10 @@ class _PasswordPageState extends State<PasswordPage> {
   bool _obscureCurrentPassword = true;
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
+  final MyAccountController myAccountController = getIt();
+  final ValueNotifier<bool> isLoading = ValueNotifier(false);
+
+
 
   @override
   void dispose() {
@@ -203,8 +210,30 @@ class _PasswordPageState extends State<PasswordPage> {
                       ),
                       Spacer(),
 
-              
-                      ElevatedButton(onPressed: (){}, child: Text("update_password".tr))
+
+                      ValueListenableBuilder(
+                        valueListenable: isLoading,
+                        builder: (context,val,_) {
+                          return val ? Center(child: getLoader(),):ElevatedButton(onPressed: ()async{
+
+                            if(_formKey.currentState!.validate()){
+                              isLoading.value = true;
+                              try{
+                                await myAccountController.updatePassword({
+                                  "old_password": _currentPasswordController.text,
+                                  "new_password": _newPasswordController.text,
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("update_success".tr)),
+                                );
+                              }catch(e){
+                                handleException(context, e  );
+                              }
+                        isLoading.value = false;
+                            }
+                          }, child: Text("update_password".tr));
+                        }
+                      )
                     ],
                   ),
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 
 import '../../../core/config/app_constants.dart';
+import '../../../core/config/utils.dart';
 import '../../../core/di/di.dart';
 import '../../../core/models/lookup_model.dart';
 import '../../../core/theme/app_theme.dart';
@@ -25,7 +26,6 @@ class _BankInfoStepState extends State<BankInfoStep> {
   final _accountNumberController = TextEditingController();
   final _ibanNumberController = TextEditingController();
   final _ibanConfirmationController = TextEditingController();
-  static String _displayStringForOption(LookUpModel lookup) => lookup.name;
     int? bankId;
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _BankInfoStepState extends State<BankInfoStep> {
           SizedBox(height: 30),
           Autocomplete<LookUpModel>(
             //   initialValue: TextEditingValue(text: cities.isNotEmpty ?cities.first.name :"" ) ,
-            displayStringForOption: _displayStringForOption,
+            displayStringForOption: displayStringForOption,
             fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
               return TextFormField(
                 controller: controller,

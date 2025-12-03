@@ -108,7 +108,8 @@ class LoginPage extends StatelessWidget {
                           Get.toNamed(AppRoutes.mainScreen);
                         }catch(e,s){
                           log("$e $s");
-                          showErrorDialog(context, e.toString().replaceRange(0, "Exception: ".length,""));
+                          handleException(context, e);
+                         // showErrorDialog(context, e.toString().replaceRange(0, "Exception: ".length,""));
                         }
 
                         isLoading.value = false;

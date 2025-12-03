@@ -90,8 +90,8 @@ class AppTranslation extends Translations {
       "district": "مقاطعة",
       "city": "المدينة",
       "zip": "الرمز البريدي",
-      "id_number": "الهوية الوطنية",
-      "enter_id_number": "الهوية الوطنية",
+      "id_number": "رقم الهوية",
+      "enter_id_number": "رقم الهوية",
       "upload_id": "تحميل مستند الهوية",
       "edit": "تعديل",
       "bank_name": "اسم البنك",
@@ -159,7 +159,24 @@ class AppTranslation extends Translations {
       "applied_discount_products":"منتجات عليها خصم",
       "apply_filers":"تطبيق الفلاتر",
       "reset_filters":"إعادة تعيين الفلاتر",
-      "category":"الفئة"
+      "category":"الفئة",
+     "postal_code": "الرمز البريدي",
+      "neighborhood":"الحي",
+      "update_success":"لقد تم تحديث البيانات بنجاح ",
+      "rate_product":"قيّم المنتج",
+     "upload_photos":"تحميل الصور",
+      "publish_comment":"نشر التعليق",
+      "close":"إغلاق",
+      "just_now":"الآن",
+      "seconds_ago": "منذ @n ثانية",
+      "minutes_ago": "منذ @n دقيقة",
+      "hours_ago": "منذ @n ساعة",
+      "days_ago": "منذ @n يوم",
+      "months_ago": "منذ @n شهر",
+      "years_ago": "منذ @n سنة",
+      "user_ratings":"تقييم العملاء",
+      "search":"بحث"
+
 
 
     },

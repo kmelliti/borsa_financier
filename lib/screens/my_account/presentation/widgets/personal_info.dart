@@ -1,13 +1,31 @@
+import 'package:borsa_now_bis/core/config/app_constants.dart';
+import 'package:borsa_now_bis/core/models/user_model.dart';
+import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/edit_personal_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/config/utils.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/theme/app_theme.dart';
 
-class PersonalInfo extends StatelessWidget {
+class PersonalInfo extends StatefulWidget {
   const PersonalInfo({super.key});
+
+  @override
+  State<PersonalInfo> createState() => _PersonalInfoState();
+}
+
+class _PersonalInfoState extends State<PersonalInfo> {
+  late UserModel user;
+  final AppServices appServices = getIt<AppServices>();
+
+  @override
+  void initState() {
+    user = appServices.getUser();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,184 +55,210 @@ class PersonalInfo extends StatelessWidget {
             ),
             SizedBox(height: 20),
             bounceAnimation(
-              c: Container(
-                width: double.infinity,
-
-                //  padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
+              c: Card(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-
-                  border: Border.all(
-                    color: HexColor.fromHex(AppTheme.borderGrey),
-                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 40),
+                child: Container(
+                  width: double.infinity,
 
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        "Kais Kacem",
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: HexColor.fromHex(AppTheme.primaryColor),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        "kais.kacem@gmail.com",
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: HexColor.fromHex("#717088"),
-                        ),
-                      ),
-                    ),
+                  //  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
 
-                    SizedBox(height: 40),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "phone_number".tr,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex("#717088"),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              "+966501234567",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    border: Border.all(
+                      color: HexColor.fromHex(AppTheme.appBackGroundColor),
                     ),
-                    SizedBox(height: 10),
-                    Divider(color: HexColor.fromHex("#CDCCE0"), thickness: 1.5),
-                    SizedBox(height: 10),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "dob".tr,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex("#717088"),
-                              ),
-                            ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundImage: NetworkImage(
+                            "$baseUrlImage/${user.picture}",
                           ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              "11/11/2000",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Divider(color: HexColor.fromHex("#CDCCE0"), thickness: 1.5),
-                    SizedBox(height: 10),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "gender".tr,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex("#717088"),
-                              ),
-                            ),
+                      SizedBox(height: 40),
+
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          user.name,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelLarge?.copyWith(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: HexColor.fromHex(AppTheme.primaryColor),
                           ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              "ذكر",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.labelLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                  ],
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          user.email,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelLarge?.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: HexColor.fromHex("#717088"),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 40),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                "phone_number".tr,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex("#717088"),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              flex: 5,
+                              child: Text(
+                                user.phone,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex(
+                                    AppTheme.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Divider(
+                        color: HexColor.fromHex("#CDCCE0"),
+                        thickness: 1.5,
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                "dob".tr,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex("#717088"),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              flex: 5,
+                              child: Text(
+                                user.birthdate != null ? df.format(user.birthdate!):"",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex(
+                                    AppTheme.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Divider(
+                        color: HexColor.fromHex("#CDCCE0"),
+                        thickness: 1.5,
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                "gender".tr,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex("#717088"),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              flex: 5,
+                              child: Text(
+                                user.gender??"",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor.fromHex(
+                                    AppTheme.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
             ),
 
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context, builder: (c){
-                  return EditPersonalInfo(
+              onPressed: () async{
+                UserModel? newUser = await   showModalBottomSheet(
 
-                  );
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (c) {
+                    return EditPersonalInfo(user: user,);
+                  },
+                );
+                if(newUser != null)
+                setState(() {
+                  user = newUser;
                 });
               },
               style: AppTheme.outlinedButtonStyle,
@@ -239,7 +283,6 @@ class PersonalInfo extends StatelessWidget {
       ),
     );
   }
-  
 
   AppBar buildAppBar() {
     return AppBar(
@@ -256,7 +299,7 @@ class PersonalInfo extends StatelessWidget {
             child: Transform.scale(
               scale: 0.5 + (value * 0.5),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   Get.back();
                 },
                 child: Container(
