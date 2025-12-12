@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/di/di.dart';
 import 'package:borsa_now_bis/screens/home_page/presentation/manager/home_page_controller.dart';
@@ -36,6 +38,8 @@ class _DealDetailsState extends State<DealDetails> {
    @override
   void initState() {
    dealModel = widget.dealModel;
+
+   log("deal model ${dealModel.id}");
    isFavorite.value = dealModel.isFavorite;
     super.initState();
   }
@@ -50,7 +54,7 @@ class _DealDetailsState extends State<DealDetails> {
         child: FloatingActionButton.extended(
           heroTag: "buy_now",
           onPressed: () {
-            Get.to(PaymentMethodsPage());
+            Get.to(PaymentMethodsPage(dealModel: dealModel,));
           },
           backgroundColor: HexColor.fromHex(AppTheme.primaryColor),
           foregroundColor: Colors.white,

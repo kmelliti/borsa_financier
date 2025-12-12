@@ -3,13 +3,18 @@ import 'package:borsa_now_bis/core/services/auth_services.dart';
 import 'package:borsa_now_bis/core/services/home_page_service.dart';
 import 'package:borsa_now_bis/core/services/my_account_services.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/manager/my_account_controller.dart';
+import 'package:borsa_now_bis/screens/my_deals/presentation/manager/my_deals_controller.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../screens/favourite/controller/favourite_controller.dart';
+import '../../screens/favourite/service/my_favourtie_service.dart';
 import '../../screens/home_page/presentation/manager/home_page_controller.dart';
 import '../../screens/login/presentation/manager/login_controller.dart';
+import '../../screens/payment/presentation/manager/checkout_controller.dart';
 import '../../screens/sign_up/presentation/controller/sign_up_controller.dart';
 import '../services/app_service.dart';
+import '../services/my_deals_service.dart';
 
 
 final getIt = GetIt.instance;
@@ -35,5 +40,10 @@ Future<void> setup() async {
   getIt.registerLazySingleton(()=>HomePageController(getIt()));
   getIt.registerLazySingleton(()=>MyAccountServices(getIt(),getIt()));
   getIt.registerLazySingleton(()=>MyAccountController(getIt()));
+  getIt.registerLazySingleton(()=>MyDealsService(getIt()));
+  getIt.registerLazySingleton(()=>MyDealsController(getIt()));
+  getIt.registerLazySingleton(()=>MyFavouriteService(getIt()));
+  getIt.registerLazySingleton(()=>FavouriteController(getIt()));
+  getIt.registerLazySingleton(()=>CheckoutController());
 
 }

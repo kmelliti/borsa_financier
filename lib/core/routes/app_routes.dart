@@ -6,6 +6,7 @@ import 'package:borsa_now_bis/splash_screen/splash_screen.dart';
 import 'package:get/get.dart';
 
 import '../../reset_password/pages/reset_password.dart';
+import '../../screens/favourite/pages/favourite_page.dart';
 import '../../screens/my_account/presentation/widgets/bank_info.dart';
 import '../../screens/my_account/presentation/widgets/password_page.dart';
 import '../../screens/my_account/presentation/widgets/personal_identity.dart';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String personalIdentity = '/personalIdentity';
   static const String bankInfo = '/bankInfo';
   static const String password = '/password';
+  static const String favourites = '/favourites';
 
   static final routes = [
     GetPage(name: login, page: () =>  LoginPage()),
@@ -34,5 +36,7 @@ class AppRoutes {
     GetPage(name: personalIdentity, page: () =>  PersonalIdentity()),
     GetPage(name: bankInfo, page: () =>  BankInfo()),
     GetPage(name: password, page: () =>  PasswordPage()),
+    GetPage(name: favourites, page: () =>  MyFavourites()),
   ];
+
 }

@@ -17,7 +17,7 @@ class MyAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context),
       body: Container(
         width: double.infinity,
         margin: EdgeInsets.all(20),
@@ -48,6 +48,7 @@ class MyAccount extends StatelessWidget {
               generalContainer(context,"personal_info".tr, "assets/icons/my_account.svg",(){
                 Get.toNamed(AppRoutes.personalInfo);
               }),
+
               SizedBox(height: 10),
               generalContainer(context,"address".tr, "assets/icons/pin.svg",(){
                 Get.toNamed(AppRoutes.address);
@@ -55,6 +56,10 @@ class MyAccount extends StatelessWidget {
               SizedBox(height: 10),
               generalContainer(context,"identity_info".tr, "assets/icons/badge.svg",(){
                 Get.toNamed(AppRoutes.personalIdentity);
+              }),
+              SizedBox(height: 10),
+              generalContainer(context,"wish_list_and_favorites".tr, "assets/icons/fav.svg",(){
+                Get.toNamed(AppRoutes.favourites);
               }),
               SizedBox(height: 10),
               generalContainer(context,"bank_info".tr, "assets/icons/bank.svg",(){
@@ -116,7 +121,7 @@ class MyAccount extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SvgPicture.asset(assets),
+              assets.contains("fav.svg") ? Icon(Icons.favorite_outline,color: HexColor.fromHex(AppTheme.primaryColor),) : SvgPicture.asset(assets,color: HexColor.fromHex(AppTheme.primaryColor),),
               SizedBox(width: 20),
               Expanded(child: Text(title,style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontSize: 16,
@@ -132,124 +137,124 @@ class MyAccount extends StatelessWidget {
       ),
     );
   }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
-      elevation: 0,
-      leadingWidth: 120,
-      leading: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 800),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Opacity(
-            opacity: value.clamp(0.0, 1.0),
-            child: Transform.scale(
-              scale: 0.5 + (value * 0.5),
-              child: Hero(
-                tag: "a2",
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      actions: [
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 600),
-          curve: Curves.easeOutBack,
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, (1 - value) * 20),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: Hero(
-                  tag: "a4",
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: HexColor.fromHex(AppTheme.borderGrey),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset("assets/icons/search.svg"),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 800),
-          curve: Curves.easeOutBack,
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, (1 - value) * 20),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: Hero(
-                  tag: "a3",
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: HexColor.fromHex(AppTheme.borderGrey),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          "assets/icons/notifications.svg",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
+  //
+  // AppBar buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
+  //     elevation: 0,
+  //     leadingWidth: 120,
+  //     leading: TweenAnimationBuilder<double>(
+  //       tween: Tween(begin: 0.0, end: 1.0),
+  //       duration: Duration(milliseconds: 800),
+  //       curve: Curves.easeOutBack,
+  //       builder: (context, value, child) {
+  //         return Opacity(
+  //           opacity: value.clamp(0.0, 1.0),
+  //           child: Transform.scale(
+  //             scale: 0.5 + (value * 0.5),
+  //             child: Hero(
+  //               tag: "a2",
+  //               child: CircleAvatar(
+  //                 backgroundImage: NetworkImage(
+  //                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //     actions: [
+  //       TweenAnimationBuilder<double>(
+  //         tween: Tween(begin: 0.0, end: 1.0),
+  //         duration: Duration(milliseconds: 600),
+  //         curve: Curves.easeOutBack,
+  //         builder: (context, value, child) {
+  //           return Transform.translate(
+  //             offset: Offset(0, (1 - value) * 20),
+  //             child: Opacity(
+  //               opacity: value.clamp(0.0, 1.0),
+  //               child: Hero(
+  //                 tag: "a4",
+  //                 child: Material(
+  //                   color: Colors.transparent,
+  //                   child: InkWell(
+  //                     onTap: () {},
+  //                     borderRadius: BorderRadius.circular(30),
+  //                     child: Container(
+  //                       width: 50,
+  //                       height: 50,
+  //                       padding: EdgeInsets.all(15),
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.white,
+  //                         shape: BoxShape.circle,
+  //                         border: Border.all(
+  //                           color: HexColor.fromHex(AppTheme.borderGrey),
+  //                         ),
+  //                         boxShadow: [
+  //                           BoxShadow(
+  //                             color: Colors.black.withOpacity(0.05),
+  //                             blurRadius: 5,
+  //                             offset: Offset(0, 2),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       child: SvgPicture.asset("assets/icons/search.svg"),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //       TweenAnimationBuilder<double>(
+  //         tween: Tween(begin: 0.0, end: 1.0),
+  //         duration: Duration(milliseconds: 800),
+  //         curve: Curves.easeOutBack,
+  //         builder: (context, value, child) {
+  //           return Transform.translate(
+  //             offset: Offset(0, (1 - value) * 20),
+  //             child: Opacity(
+  //               opacity: value.clamp(0.0, 1.0),
+  //               child: Hero(
+  //                 tag: "a3",
+  //                 child: Material(
+  //                   color: Colors.transparent,
+  //                   child: InkWell(
+  //                     onTap: () {},
+  //                     borderRadius: BorderRadius.circular(30),
+  //                     child: Container(
+  //                       width: 50,
+  //                       height: 50,
+  //                       padding: EdgeInsets.all(15),
+  //                       margin: EdgeInsets.symmetric(horizontal: 15),
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.white,
+  //                         shape: BoxShape.circle,
+  //                         border: Border.all(
+  //                           color: HexColor.fromHex(AppTheme.borderGrey),
+  //                         ),
+  //                         boxShadow: [
+  //                           BoxShadow(
+  //                             color: Colors.black.withOpacity(0.05),
+  //                             blurRadius: 5,
+  //                             offset: Offset(0, 2),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       child: SvgPicture.asset(
+  //                         "assets/icons/notifications.svg",
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 }

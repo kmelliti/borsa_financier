@@ -11,11 +11,19 @@ import '../../../payment/presentation/pages/checkout.dart';
 import '../../data/models/deal_product_model.dart';
 
 typedef OnDetailsClicked = void Function();
+
 class SingleItemShoppingList extends StatelessWidget {
-  const SingleItemShoppingList({super.key, required this.dealProductModel,  this.isRelatedItem = false, this.onDetailsClicked});
+  const SingleItemShoppingList({
+    super.key,
+    required this.dealProductModel,
+    this.isRelatedItem = false,
+    this.onDetailsClicked,
+  });
+
   final DealProductModel dealProductModel;
-  final bool isRelatedItem ;
-  final OnDetailsClicked? onDetailsClicked ;
+  final bool isRelatedItem;
+
+  final OnDetailsClicked? onDetailsClicked;
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +54,13 @@ class SingleItemShoppingList extends StatelessWidget {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    getPriceInText(double.parse(dealProductModel.wholesalePrice)),
+                    getPriceInText(
+                      double.parse(dealProductModel.wholesalePrice),
+                    ),
                     SizedBox(width: 10),
-                    getDiscountedPriceInText(double.parse(dealProductModel.retailPrice)),
+                    getDiscountedPriceInText(
+                      double.parse(dealProductModel.retailPrice),
+                    ),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -98,23 +110,26 @@ class SingleItemShoppingList extends StatelessWidget {
                 SizedBox(height: 20),
                 Row(
                   children: [
-        Expanded(
+                    Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-
-                          isRelatedItem ? onDetailsClicked!() : Get.to(DealDetails(dealModel: dealProductModel));
+                          isRelatedItem
+                              ? onDetailsClicked!()
+                              : Get.to(
+                                DealDetails(dealModel: dealProductModel),
+                              );
                         },
                         child: Text("details".tr),
                         style: AppTheme.outlinedButtonStyle,
                       ),
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(width: 10),
                     Expanded(
                       child: Hero(
                         tag: "buy_now",
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(Checkout());
+                            Get.to(Checkout(deal: dealProductModel));
                           },
                           child: Text("buy_now".tr),
                         ),
@@ -134,24 +149,28 @@ class SingleItemShoppingList extends StatelessWidget {
     return Stack(
       children: [
         FutureBuilder(
-          future: getDominantColor("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}"),
-          builder: (context,snap) {
+          future: getDominantColor(
+            "${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",
+          ),
+          builder: (context, snap) {
             return Container(
 
-
               decoration: BoxDecoration(
-
-                color: snap.data,
+             //   color: snap.data,
                 //color: HexColor.fromHex("#EFEFE3"),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Center(
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.network("${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",fit: BoxFit.fill,)),
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.network(
+                    "${baseUrlImage}${dealProductModel.product.productPictures.first.picture}",
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             );
-          }
+          },
         ),
         Positioned(
           top: 20,

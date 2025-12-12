@@ -13,7 +13,7 @@ class MyWallet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context),
       body: Container(
         width: double.infinity,
         margin: EdgeInsets.all(20),
@@ -118,53 +118,53 @@ class MyWallet extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
-      leadingWidth: 120,
-      elevation: 0,
-      leading: Hero(
-        tag: "a2",
-        child: CircleAvatar(
-          backgroundImage: NetworkImage(
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-          ),
-        ),
-      ),
-      actions: [
-        Hero(
-          tag: "a4",
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-            ),
-            child: SvgPicture.asset("assets/icons/search.svg"),
-          ),
-        ),
-
-        Hero(
-          tag: "a3",
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: EdgeInsets.all(15),
-            margin: EdgeInsets.symmetric(horizontal: 15),
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-            ),
-            child: SvgPicture.asset("assets/icons/notifications.svg"),
-          ),
-        ),
-      ],
-    );
-  }
+  // AppBar buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
+  //     leadingWidth: 120,
+  //     elevation: 0,
+  //     leading: Hero(
+  //       tag: "a2",
+  //       child: CircleAvatar(
+  //         backgroundImage: NetworkImage(
+  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
+  //         ),
+  //       ),
+  //     ),
+  //     actions: [
+  //       Hero(
+  //         tag: "a4",
+  //         child: Container(
+  //           width: 50,
+  //           height: 50,
+  //           padding: EdgeInsets.all(15),
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             shape: BoxShape.circle,
+  //             border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+  //           ),
+  //           child: SvgPicture.asset("assets/icons/search.svg"),
+  //         ),
+  //       ),
+  //
+  //       Hero(
+  //         tag: "a3",
+  //         child: Container(
+  //           width: 50,
+  //           height: 50,
+  //           padding: EdgeInsets.all(15),
+  //           margin: EdgeInsets.symmetric(horizontal: 15),
+  //
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             shape: BoxShape.circle,
+  //
+  //             border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+  //           ),
+  //           child: SvgPicture.asset("assets/icons/notifications.svg"),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

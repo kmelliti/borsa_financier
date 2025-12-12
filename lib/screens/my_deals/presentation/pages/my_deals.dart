@@ -1,21 +1,54 @@
+import 'package:borsa_now_bis/screens/my_deals/presentation/widgets/single_deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../core/config/bottom_navigator.dart';
 import '../../../../core/config/utils.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../home_page/data/models/deal_product_model.dart';
+import '../../data/models/subscribed_deal_model.dart';
+import '../manager/my_deals_controller.dart';
 
-class MyDeals extends StatelessWidget {
-  const MyDeals({super.key});
+class MyDeals extends StatefulWidget {
+   MyDeals({super.key});
 
+  @override
+  State<MyDeals> createState() => _MyDealsState();
+}
+
+class _MyDealsState extends State<MyDeals> {
+   final MyDealsController _myDealsController = getIt();
+
+   final ValueNotifier<Map<String,dynamic>?> filters = ValueNotifier(null);
+
+   late final _pagingController = PagingController<int, SubscribedDealModel>(
+
+     getNextPageKey: (state) {
+       // This convenience getter checks if the last returned page is empty.
+       // You can replace this with a check if the last page has returned less items than expected,
+       // for a more efficient implementation.
+       if (state.lastPageIsEmpty) return null;
+
+       // This convenience getter increments the page key by 1, assuming keys start at 1.
+       return state.nextIntPageKey;
+     },
+
+     fetchPage: (pageKey) => _myDealsController.getMyDeals(pageKey, filters.value),
+   );
+
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context, null, (v){
+
+      }),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
@@ -44,62 +77,78 @@ class MyDeals extends StatelessWidget {
                 },
               ),
               SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: bounceAnimation(c:
-                       Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: HexColor.fromHex("#E9F0FF"),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: HexColor.fromHex("#EBEBEB")),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons/money_light.svg",
-                              color: HexColor.fromHex(AppTheme.primaryColor),
+              FutureBuilder(
+                future: _myDealsController.getDashboard( ),
+                builder: (context,snap) {
+                  if(snap.connectionState == ConnectionState.waiting){
+                    return Center(
+                      child: getLoader(),
+                    );
+                  }
+                  if(snap.hasError){
+                    return Center(
+                      child: Text("error_title".tr),
+                    );
+                  }
+                  Map<String,dynamic> data = snap.data!;
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: bounceAnimation(c:
+                           Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: HexColor.fromHex("#E9F0FF"),
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: HexColor.fromHex("#EBEBEB")),
                             ),
-                            SizedBox(height: 10),
-                            getPriceInText(534.23),
-                            SizedBox(height: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/money_light.svg",
+                                  color: HexColor.fromHex(AppTheme.primaryColor),
+                                ),
+                                SizedBox(height: 10),
+                                getPriceInText(double.parse(data['total_deals'])),
+                                SizedBox(height: 10),
 
-                            Text("total_deals".tr),
-                          ],
+                                Text("total_deals".tr),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: bounceAnimation(c:
-                       Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: HexColor.fromHex("#E6FFFA"),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: HexColor.fromHex("#EBEBEB")),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons/money_bag.svg",
-                              color: HexColor.fromHex(AppTheme.primaryColor),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: bounceAnimation(c:
+                           Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: HexColor.fromHex("#E6FFFA"),
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: HexColor.fromHex("#EBEBEB")),
                             ),
-                            SizedBox(height: 10),
-                            getPriceInText(534.23),
-                            SizedBox(height: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/money_bag.svg",
+                                  color: HexColor.fromHex(AppTheme.primaryColor),
+                                ),
+                                SizedBox(height: 10),
+                                getPriceInText(double.parse(data['total_profits'])),
+                                SizedBox(height: 10),
 
-                            Text("total_gains".tr),
-                          ],
+                                Text("total_gains".tr),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                }
               ),
               SizedBox(height: 40),
               TweenAnimationBuilder(
@@ -129,21 +178,27 @@ class MyDeals extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 20),
                 child: searchArea(),
               ),
+              PagingListener(
+                controller: _pagingController,
+                builder: (context, state, fetchNextPage) => PagedListView<int, SubscribedDealModel>(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  state: state,
+
+                  fetchNextPage: fetchNextPage,
+                  builderDelegate: PagedChildBuilderDelegate(
+                    animateTransitions: true,
+                    itemBuilder: (context, item, index) => Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        child: SingleMyDeal(deal : item)),
+                  ),
+                ),
+              ),
               // Add your deals list here with staggered animations
               // Example:
               // ..._buildAnimatedDealsList(),
               SizedBox(height: 20),
-              Container(
 
-                child: ListView.builder(
-                  itemCount: 1,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (c, index) {
-                    return singleDeal(c);
-                  },
-                ),
-              ),
             ],
           ),
         ),
@@ -151,55 +206,46 @@ class MyDeals extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
-      leadingWidth: 120,
-      elevation: 0,
-      leading: Hero(
-        tag: "a2",
-        child: CircleAvatar(
-          backgroundImage: NetworkImage(
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-          ),
-        ),
-      ),
-      actions: [
-        Hero(
-          tag: "a4",
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-            ),
-            child: SvgPicture.asset("assets/icons/search.svg"),
-          ),
-        ),
-
-        Hero(
-          tag: "a3",
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: EdgeInsets.all(15),
-            margin: EdgeInsets.symmetric(horizontal: 15),
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-            ),
-            child: SvgPicture.asset("assets/icons/notifications.svg"),
-          ),
-        ),
-      ],
-    );
-  }
+  // AppBar buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
+  //     leadingWidth: 120,
+  //     elevation: 0,
+  //     leading: CircleAvatar(
+  //       backgroundImage: NetworkImage(
+  //         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
+  //       ),
+  //     ),
+  //     actions: [
+  //       Container(
+  //         width: 50,
+  //         height: 50,
+  //         padding: EdgeInsets.all(15),
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           shape: BoxShape.circle,
+  //           border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+  //         ),
+  //         child: SvgPicture.asset("assets/icons/search.svg"),
+  //       ),
+  //
+  //       Container(
+  //         width: 50,
+  //         height: 50,
+  //         padding: EdgeInsets.all(15),
+  //         margin: EdgeInsets.symmetric(horizontal: 15),
+  //
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           shape: BoxShape.circle,
+  //
+  //           border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+  //         ),
+  //         child: SvgPicture.asset("assets/icons/notifications.svg"),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget searchArea() {
     return TweenAnimationBuilder<double>(
@@ -238,8 +284,16 @@ class MyDeals extends StatelessWidget {
                               horizontal: 20.0,
                             ),
                             child: TextField(
+                              controller: searchController,
+                              onChanged: (v){
+                                if(v.isEmpty){
+                                  filters.value = {};
+                                  _pagingController.refresh();
+                                }
+                              },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
+
                                 hintText: "search_by_product_name".tr,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -251,7 +305,14 @@ class MyDeals extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              filters.value = {
+                                "product_name": searchController.text,
+                              };
+                              _pagingController.refresh();
+
+
+                            },
                             child: AnimatedSwitcher(
                               duration: Duration(milliseconds: 300),
                               child: SvgPicture.asset(
@@ -305,196 +366,6 @@ class MyDeals extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget singleDeal(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: HexColor.fromHex(AppTheme.borderGreyLight)),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  height: 100,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: HexColor.fromHex("#EFEFE3"),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(child: Image.asset("assets/icons/aa1.png")),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                flex: 2,
-                child: SizedBox(
-                  height: 100,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start
-                    ,
-                    children: [
-                      Text(
-                        "كولد برو بالتوت العليق والكريمة",
-                        maxLines: 1,
-
-                        style: Theme.of(
-                          context,
-                        ).textTheme.displayLarge?.copyWith(
-                          color: HexColor.fromHex(AppTheme.primaryColor),
-                          fontWeight: FontWeight.w800,
-                          fontSize: 20,
-                          overflow: TextOverflow.ellipsis
-                        ),
-                      ),
-
-                      SizedBox(height: 10,),
-                      Text("22-12-2025"),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              color: HexColor.fromHex("#F5F5F5"),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "price".tr,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                getPriceInText(10,Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: HexColor.fromHex(AppTheme.primaryColor),
-                ),12),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "bought_quantity".tr,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  "10",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              color: HexColor.fromHex("#F5F5F5"),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "sold_quantity".tr,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                getPriceInText(10,Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: HexColor.fromHex(AppTheme.primaryColor),
-                ),12),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "available_in_storage".tr,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  "10 ${"unit_in_storage".tr}",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              color: HexColor.fromHex("#F5F5F5"),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "income".tr,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                getPriceInText(1500,Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: HexColor.fromHex(AppTheme.primaryColor),
-                ),12),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

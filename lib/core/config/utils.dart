@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:borsa_now_bis/core/models/user_model.dart';
 import 'package:borsa_now_bis/core/routes/app_routes.dart';
+import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:borsa_now_bis/core/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,95 @@ import 'app_constants.dart';
 
 String displayStringForOption(LookUpModel lookup) => lookup.name;
 
+
+void sampleColorExtraction (){
+  // ImageColorBuilder(
+  //   url: "$baseUrlImage/$value",
+  //   builder: (c, image, color) {
+  //     return Container(
+  //       height: 300,
+  //       decoration: BoxDecoration(
+  //         color: color,
+  //         borderRadius: BorderRadius.circular(20),
+  //         border: Border.all(
+  //           color: HexColor.fromHex(AppTheme.borderGrey),
+  //         ),
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //           Center(child: image),
+  //           Positioned(
+  //             bottom: 0,
+  //             top: 0,
+  //             right: 10,
+  //             child: InkWell(
+  //               onTap: () {
+  //                 int currentIndex = widget.pictures.indexWhere(
+  //                       (element) => element.picture == value,
+  //                 );
+  //                 log(
+  //                   "arroww back $currentIndex ${widget.pictures.length}",
+  //                 );
+  //                 if (currentIndex + 1 == widget.pictures.length) {
+  //                   img.value = widget.pictures.first.picture;
+  //                 } else {
+  //                   img.value =
+  //                       widget.pictures[currentIndex + 1].picture;
+  //                 }
+  //               },
+  //               child: Container(
+  //                 padding: const EdgeInsets.all(7),
+  //                 decoration: BoxDecoration(
+  //                   color: HexColor.fromHex(AppTheme.primaryColor),
+  //                   shape: BoxShape.circle,
+  //                 ),
+  //                 child: Icon(
+  //                   Icons.arrow_back,
+  //                   color: Colors.white,
+  //                   size: 20,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           Positioned(
+  //             bottom: 0,
+  //             top: 0,
+  //             left: 10,
+  //             child: InkWell(
+  //               onTap: () {
+  //                 int currentIndex = widget.pictures.indexWhere(
+  //                       (element) => element.picture == value,
+  //                 );
+  //                 log(
+  //                   "arroww back $currentIndex ${widget.pictures.length}",
+  //                 );
+  //                 if (currentIndex == 0) {
+  //                   img.value = widget.pictures.last.picture;
+  //                 } else {
+  //                   img.value =
+  //                       widget.pictures[currentIndex - 1].picture;
+  //                 }
+  //               },
+  //               child: Container(
+  //                 padding: const EdgeInsets.all(7),
+  //                 decoration: BoxDecoration(
+  //                   color: HexColor.fromHex(AppTheme.primaryColor),
+  //                   shape: BoxShape.circle,
+  //                 ),
+  //                 child: Icon(
+  //                   Icons.arrow_forward,
+  //                   color: Colors.white,
+  //                   size: 20,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   },
+  // );
+}
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {
@@ -149,8 +240,8 @@ void showErrorDialog(BuildContext context, String? error) {
             Text(
               "error_title".tr,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
+                color: HexColor.fromHex("#1E1D33"),
+                fontWeight: FontWeight.w800,
                 letterSpacing: 0.2,
                 fontSize: 20,
               ),
@@ -165,12 +256,17 @@ void showErrorDialog(BuildContext context, String? error) {
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 60),
+            SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 Get.back();
               },
-              child: Text("ok".tr),
+              child: Text("ok".tr,style:Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: HexColor.fromHex(AppTheme.primaryColor),
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                fontSize: 14,
+              ),),
               style: AppTheme.outlinedButtonStyle,
             ),
           ],
@@ -305,6 +401,8 @@ void showLogoutAlert(BuildContext context) {
 }
 
 AppBar buildAppBar(BuildContext context, [bool? autoBack = false,Function(String value)? onSearchSubmitted]) {
+  final AppServices services = getIt();
+  UserModel user = services.getUser();
   final ValueNotifier<double> widthSearchBox = ValueNotifier(57);
   TextEditingController searchController = TextEditingController();
   return AppBar(
@@ -353,13 +451,10 @@ AppBar buildAppBar(BuildContext context, [bool? autoBack = false,Function(String
                   opacity: value.clamp(0.0, 1.0),
                   child: Transform.scale(
                     scale: 0.5 + (value * 0.5),
-                    child: Hero(
-                      tag: "a2",
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        "${baseUrlImage}/${user.picture}",
 
-                        ),
                       ),
                     ),
                   ),
@@ -425,6 +520,7 @@ AppBar buildAppBar(BuildContext context, [bool? autoBack = false,Function(String
                                     prefixIcon: InkWell(
                                       onTap: () {
                                         searchController.text = "";
+
 
                                         widthSearchBox.value = 55;
                                       },

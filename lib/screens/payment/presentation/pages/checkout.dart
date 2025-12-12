@@ -1,13 +1,38 @@
+import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/config/utils.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../manager/checkout_controller.dart';
 
-class Checkout extends StatelessWidget {
-  const Checkout({super.key});
+class Checkout extends StatefulWidget {
+   Checkout({super.key, required this.deal});
+  final DealProductModel deal;
 
+  @override
+  State<Checkout> createState() => _CheckoutState();
+}
+
+class _CheckoutState extends State<Checkout> {
+  final CheckoutController controller = getIt<CheckoutController>();
+
+  late ValueNotifier<int> desiredQuantity ;
+   late TextEditingController inputQuantity ;
+
+   @override
+  void initState() {
+     desiredQuantity = ValueNotifier<int>(double.parse(widget.deal.minInvestment).toInt());
+     inputQuantity = TextEditingController(text: widget.deal.minInvestment);
+    super.initState();
+  }
+  dispose() {
+    desiredQuantity.dispose();
+    inputQuantity.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,20 +46,17 @@ class Checkout extends StatelessWidget {
                 onTap: () {
                   Get.back();
                 },
-                child: Hero(
-                  tag: "a2",
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: HexColor.fromHex(AppTheme.borderGrey),
-                      ),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: HexColor.fromHex(AppTheme.borderGrey),
                     ),
-                    child: Icon(Icons.arrow_back),
                   ),
+                  child: Icon(Icons.arrow_back),
                 ),
               ),
               SizedBox(width: 10),
@@ -51,67 +73,83 @@ class Checkout extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(20),
-        color: Colors.white,
-        constraints: BoxConstraints(maxHeight: 250),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "sub_total".tr,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                  ),
+      bottomNavigationBar: ValueListenableBuilder(
+        valueListenable: desiredQuantity,
+        builder: (context,quantity,child) {
+          return Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(
+                  color: HexColor.fromHex("#F0F0F0"),
                 ),
-                getPriceInText(
-                  10000,
-                  TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                  ),
-                  15,
-                ),
-              ],
+              ),
             ),
-            SizedBox(height: 10),
-            Divider(),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            constraints: BoxConstraints(maxHeight: 250),
+            child: Column(
               children: [
-                Text(
-                  "total".tr,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "sub_total".tr,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      ),
+                    ),
+                    getPriceInText(
+                      quantity * double.parse(widget.deal.retailPrice),
+                      TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      ),
+                      15,
+                    ),
+                  ],
                 ),
-                getPriceInText(
-                  10000,
-                  TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: HexColor.fromHex(AppTheme.primaryColor),
-                  ),
-                  15,
+                SizedBox(height: 10),
+                Divider(),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "total".tr,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      ),
+                    ),
+                    getPriceInText(
+                      quantity * double.parse(widget.deal.retailPrice),
+                      TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      ),
+                      15,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(height: 20),
+                SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: () {},
-              child: Text("complete_payment".tr),
+                ElevatedButton(
+                  onPressed: () {
+                    if(!inputQuantity.text.isNumericOnly || double.parse(inputQuantity.text)<double.parse(widget.deal.minInvestment)){
+                      showErrorDialog(context, "${widget.deal.minInvestment} ${"min_invest_error".tr}" );
+                    }
+                  },
+                  child: Text("complete_payment".tr),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        }
       ),
       body: SafeArea(
         child: Padding(
@@ -157,10 +195,11 @@ class Checkout extends StatelessWidget {
                             child: SizedBox(
                               height: 100,
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      "كولد برو بالتوت العليق والكريمة",
+                                      widget.deal.product.name,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.displayLarge?.copyWith(
@@ -173,7 +212,7 @@ class Checkout extends StatelessWidget {
                                     ),
                                   ),
                                   getPriceInText(
-                                    10.0,
+                                    double.parse(widget.deal.retailPrice),
                                     TextStyle(fontSize: 20),
                                     15,
                                   ),
@@ -207,7 +246,7 @@ class Checkout extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "10",
+                              widget.deal.minInvestment.toString(),
                               style: Theme.of(
                                 context,
                               ).textTheme.bodySmall?.copyWith(
@@ -243,7 +282,7 @@ class Checkout extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "10",
+                                widget.deal.quantity.toString(),
                               style: Theme.of(
                                 context,
                               ).textTheme.headlineSmall?.copyWith(
@@ -270,7 +309,20 @@ class Checkout extends StatelessWidget {
                     ),
                   ),
                 ),
-                TextField(),
+                TextFormField(
+                  controller: inputQuantity,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    if(value.isNotEmpty){
+                      desiredQuantity.value = int.parse(value);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
                 SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),

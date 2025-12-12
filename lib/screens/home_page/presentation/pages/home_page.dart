@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final HomePageController _homePageController = getIt<HomePageController>();
-  ValueNotifier<Map<String,dynamic>?> filters = ValueNotifier(null);
+  final ValueNotifier<Map<String,dynamic>?> filters = ValueNotifier(null);
   late final _pagingController = PagingController<int, DealProductModel>(
     getNextPageKey:
         (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
@@ -72,6 +72,7 @@ class HomePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               // Animated search bar
+
               AnimatedContainer(
                 duration: Duration(milliseconds: 800),
                 curve: Curves.easeOutQuart,
@@ -179,6 +180,8 @@ class HomePage extends StatelessWidget {
                         // This will be used for the tap effect
                         if(f!= null){
                           filters.value = null;
+                          _pagingController.refresh();
+
                           return;
                         }
                         showModalBottomSheet(
@@ -197,6 +200,7 @@ class HomePage extends StatelessWidget {
                           builder: (context) {
                             return Filters(onFilter: (Map<String, dynamic> f) {
                               filters.value = f;
+
                               _pagingController.refresh();
                             },);
                           },

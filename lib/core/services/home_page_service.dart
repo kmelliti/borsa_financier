@@ -14,18 +14,18 @@ class HomePageService {
 
   Future<List<DealProductModel>> getDealProducts(int pageKey, Map<String, dynamic>? value) async {
     int page = pageKey;
-    if(value != null){
-      page = 1;
-    }
+
     try {
       final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?page=$page",queryParameters: value);
-      log("response filters for ${value} page key ${pageKey} ${response.data}");
+      log("response filters for ${value} page key ${pageKey} ${(response.data['data']['data'] as List).length}");
       return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
     } catch (e, s) {
       log("$e $s");
       throw e;
     }
-  }  Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
+  }
+
+  Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
     try {
       final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?id=$dealId");
       return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
@@ -73,6 +73,21 @@ class HomePageService {
       throw e;
     }
   }
+
+  Future<void> subscribedToDeal (Map<String,dynamic> params)async {
+    try {
+      final response = await _dio.post("/BorsaNow/public/api/v1/investor/deal/subscribe/${getLang()}",data: params);
+      if (response.data["result"] == false) {
+        throw ApiException(response.data["message"]);
+      }
+      log("${response.data}");
+
+    } catch (e, s) {
+      log("$e $s");
+      throw e;
+    }
+  }
+
 
 
 }

@@ -175,7 +175,16 @@ class AppTranslation extends Translations {
       "months_ago": "منذ @n شهر",
       "years_ago": "منذ @n سنة",
       "user_ratings":"تقييم العملاء",
-      "search":"بحث"
+      "search":"بحث",
+      "pay_card":"ادفع بالبطاقة",
+      "pay":"دفع",
+      "payment_success":"تم الدفع بنجاح",
+      "payment_success_sub":"لقد أتممت عملية الدفع بنجاح، يمكنك الآن متابعة طلبك بسهولة",
+      "min_invest_error":"قطعة هي أقل كمية يمكنك طلبها",
+      "wish_list_and_favorites":"قائمة الرغبات والمفضلة",
+      "are_you_sure_you_want_to_remove_this_favourite":"هل أنت متأكد أنك تريد إزالة هذا المنتج من المفضلة؟",
+      "yes_remove":"نعم، إزالة",
+      "no_keep":"لا، احتفظ به"
 
 
 

@@ -1,18 +1,40 @@
+import 'dart:developer';
+
 import 'package:borsa_now_bis/core/config/bottom_navigator.dart';
+import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:borsa_now_bis/screens/home_page/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 
 import '../../../../core/config/app_constants.dart';
+import '../../../../core/di/di.dart';
 import '../../../my_account/presentation/pages/my_account.dart';
 import '../../../my_deals/presentation/pages/my_deals.dart';
 import '../../../my_wallet/presentation/pages/my_wallet.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   MainScreen({super.key});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final AppServices appServices = getIt();
+
+  @override
+  void initState() {
+    log(appServices.getToken()??"No token");
 
 
-
+  if(  Get.arguments != null){
+    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((c){
+      indexWidget.value = Get.arguments;
+    });
+  }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

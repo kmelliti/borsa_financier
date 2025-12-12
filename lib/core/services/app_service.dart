@@ -22,7 +22,6 @@ class AppServices {
       final response = await _dio.get(
         'BorsaNow/public/api/v1/general/cities/${getLang()}',
       );
-      log("Response cities ${response.data}");
 
       if (response.statusCode == 200) {
         cities = lookUpModelFromJson(jsonEncode(response.data['data']));
