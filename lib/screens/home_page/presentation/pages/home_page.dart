@@ -4,105 +4,514 @@ import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
 import 'package:borsa_now_bis/screens/home_page/presentation/manager/home_page_controller.dart';
+import 'package:borsa_now_bis/screens/home_page/presentation/widgets/single_item_shopping_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../core/config/bottom_navigator.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/widgets/filters.dart';
+import '../widgets/promos_widget.dart';
 import '../widgets/single_item_shopping_list.dart';
 
-class HomePage extends StatelessWidget {
+ValueNotifier<bool> promosLoading = ValueNotifier(false);
+List promos = [];
+
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final HomePageController _homePageController = getIt<HomePageController>();
+
   ValueNotifier<Map<String,dynamic>?> filters = ValueNotifier(null);
-  late final _pagingController = PagingController<int, DealProductModel>(
-    getNextPageKey:
-        (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+
+  late final _pagingController =  PagingController<int, DealProductModel>(
+    // getNextPageKey: (state) => (state.keys?.last ?? 0) + 1,
+    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey,filters.value),
+    // fetchPage: (pageKey) async {
+    //   final newItems = await _homePageController.getDealProducts(pageKey,filters.value);
+    //   return newItems; // Return the list of items directly
+    // },
   );
+
+  @override
+
+  Future<void> fetchPromos() async {
+
+    promosLoading.value = true;
+    promos = await _homePageController.getPromos();
+    promosLoading.value = false;
+
+  }
+
+  void initState() {
+
+
+    fetchPromos();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
 
     return Scaffold(
-      appBar: buildAppBar(context,null,(v){
+      appBar: buildAppBar2(context,null,(v){
         log("$v");
         filters.value = {
           "product_name":v
         };
         _pagingController.refresh();
       }),
+
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Animated title with fade and slide effect
-              TweenAnimationBuilder(
-                tween: Tween(begin: 0.0, end: 1.0),
-                duration: Duration(milliseconds: 600),
-                builder: (context, double value, child) {
-                  return Transform.translate(
-                    offset: Offset(0, (1 - value) * 20),
-                    child: Opacity(
-                      opacity: value,
-                      child: Text(
-                        "mass_shopping".tr,
-                        style: Theme
-                            .of(
-                          context,
-                        )
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(
-                          fontSize: 24,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  SizedBox(height: 40),
+                  // Animated search bar
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 800),
+                    curve: Curves.easeOutQuart,
+                    // padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: searchArea(),
+                  ),
+                  SizedBox(height: 20),
+
+
+                  /**********************************************************************/
+                  ValueListenableBuilder(
+                      valueListenable: promosLoading,
+                      builder: (context, isLoading, _) {
+                        return isLoading ?
+                        SizedBox(
+                            height: 106,
+                            child: Center(
+                                child: CircularProgressIndicator()
+                            )
+                        ) :
+                        PromosWidget(promos: promos,);
+                      }
+                  ),
+
+                  /**********************************************************************/
+
+                  SizedBox(height: 20),
+
+
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Text("الفئات", style: Theme.of(context,)
+                            .textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                          // color: Colors.white,
+                        ),),
+                        SizedBox(width: 10,),
+                        SvgPicture.asset("assets/icons/arrow.svg", width: 14, height: 12),
+                      ],
                     ),
-                  );
-                },
-              ),
-              SizedBox(height: 20),
-              // Animated search bar
-              AnimatedContainer(
-                duration: Duration(milliseconds: 800),
-                curve: Curves.easeOutQuart,
-                padding: EdgeInsets.only(bottom: 10),
-                child: searchArea(),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: PagingListener(
-                  controller: _pagingController,
-                  builder: (context, state, fetchNext) {
-                    return PagedListView<int,DealProductModel>(
+                  ),
 
-                      fetchNextPage: fetchNext,
-                      builderDelegate: PagedChildBuilderDelegate(
-                        itemBuilder: (context, item, index) {
-                          return Container(
-                              margin: EdgeInsets.symmetric(vertical: 10),
-                              child: pushUpAnimation(SingleItemShoppingList(dealProductModel: item,)));
-                        },
+                  SizedBox(height: 20),
 
+                  /**********************************************************************/
+                  SizedBox(
+                    height: 39,
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      scrollDirection: Axis.horizontal,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
                       ),
-                       state: state,
-                    );
-                  },
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          // width: 113,
+                          padding: EdgeInsets.only(left: 10, top: 5, right: 5, bottom: 5),
+                          decoration: BoxDecoration(
+                            color: HexColor.fromHex(AppTheme.primaryColor),
+                            borderRadius: BorderRadius.circular(20),
+                            // border: Border.all(color: HexColor.fromHex(AppTheme.borderColor)),
+                          ),
+                          child: Row(
+                            children: [
+
+                              ClipOval(
+                                child: SvgPicture.asset(
+                                  'assets/icons/filter1.svg',
+                                  width: 20, // Specify width and height
+                                  height: 20,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              SizedBox(width: 10,),
+                              Text("التجار الرائجون",
+                                style:  Theme.of(context,).textTheme.bodySmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        // Container(
+                        //   // width: 113,
+                        //   padding: EdgeInsets.only(left: 10, top: 5, right: 5, bottom: 5),
+                        //   decoration: BoxDecoration(
+                        //     // color: HexColor.fromHex("#E5864C"),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //     border: Border.all(color: HexColor.fromHex(AppTheme.borderColor)),
+                        //   ),
+                        //   child: Row(
+                        //     children: [
+                        //
+                        //       // CircleAvatar(
+                        //       //   backgroundImage: const SvgPicture.asset('assets/images/your_image.svg'),
+                        //       // ),
+                        //       ClipOval(
+                        //         child: SvgPicture.asset(
+                        //           'assets/icons/filter3.svg',
+                        //           width: 20, // Specify width and height
+                        //           height: 20,
+                        //           fit: BoxFit.cover,
+                        //         ),
+                        //       ),
+                        //       SizedBox(width: 10,),
+                        //       Text("التجار الرائجون",
+                        //         style:  Theme.of(context,).textTheme.bodySmall?.copyWith(
+                        //           color: AppTheme.primaryColor,
+                        //           fontWeight: FontWeight.w500,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+
+
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(width: 10,);
+                      },
+                      itemCount: 3,
+
+                    ),
+                  ),
+                  /**********************************************************************/
+
+
+                  /**********************************************************************/
+
+                ],
+              ),
+            ),
+
+            // PagedSliverList<int, DealProductModel>(
+            //   state: _pagingController.value,
+            //   fetchNextPage: _pagingController.fetchNextPage,
+            //   builderDelegate: PagedChildBuilderDelegate<DealProductModel>(
+            //     itemBuilder: (context, item, index) => pushUpAnimation(SingleItemShoppingList(dealProductModel: item,)),
+            //   ),
+            // ),
+
+
+            SliverPadding(
+              padding: EdgeInsets.all(20),
+              sliver: PagingListener(
+                controller: _pagingController,
+                builder: (context, state, fetchNext) => PagedSliverGrid<int, DealProductModel>(
+                  // Provide state and fetch logic from your controller
+                  state: _pagingController.value,
+                  fetchNextPage: _pagingController.fetchNextPage,
+
+                  // Define your grid layout (e.g., 2 columns)
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: .57,
+                  ),
+
+                  // Build your grid tiles
+                  builderDelegate: PagedChildBuilderDelegate<DealProductModel>(
+                    itemBuilder: (context, item, index) => pushUpAnimation(SingleItemShoppingGrid(dealProductModel: item,)),
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+
+
+            // SliverToBoxAdapter(
+            //   child: PagingListener(
+            //     controller: _pagingController,
+            //     builder: (context, state, fetchNext) {
+            //       return PagedListView<int,DealProductModel>(
+            //         padding: EdgeInsets.all(20),
+            //         physics: const NeverScrollableScrollPhysics(),
+            //         shrinkWrap: true,
+            //         fetchNextPage: fetchNext,
+            //         builderDelegate: PagedChildBuilderDelegate(
+            //           itemBuilder: (context, item, index) {
+            //             return Container(
+            //                 margin: EdgeInsets.symmetric(vertical: 10),
+            //                 child: pushUpAnimation(SingleItemShoppingList(dealProductModel: item,)));
+            //           },
+            //
+            //         ),
+            //         state: state,
+            //       );
+            //     },
+            //   ),
+            // ),
+
+            // PagedSliverList<int, DealProductModel>(
+            //   con: _pagingController,
+            //   builderDelegate: PagedChildBuilderDelegate<DealProductModel>(
+            //     itemBuilder: (context, item, index) => ListTile(
+            //       title: Text(item.title),
+            //     ),
+            //   ), state: state,
+            //   fetchNextPage: fetchNext,
+            // ),
+
+          ],
+          // child: Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     // Animated title with fade and slide effect
+          //     // TweenAnimationBuilder(
+          //     //   tween: Tween(begin: 0.0, end: 1.0),
+          //     //   duration: Duration(milliseconds: 600),
+          //     //   builder: (context, double value, child) {
+          //     //     return Transform.translate(
+          //     //       offset: Offset(0, (1 - value) * 20),
+          //     //       child: Opacity(
+          //     //         opacity: value,
+          //     //         child: Text(
+          //     //           "mass_shopping".tr,
+          //     //           style: Theme
+          //     //               .of(
+          //     //             context,
+          //     //           )
+          //     //               .textTheme
+          //     //               .labelLarge
+          //     //               ?.copyWith(
+          //     //             fontSize: 24,
+          //     //             fontWeight: FontWeight.w800,
+          //     //           ),
+          //     //         ),
+          //     //       ),
+          //     //     );
+          //     //   },
+          //     // ),
+          //     SizedBox(height: 40),
+          //     // Animated search bar
+          //     AnimatedContainer(
+          //       duration: Duration(milliseconds: 800),
+          //       curve: Curves.easeOutQuart,
+          //       // padding: EdgeInsets.only(bottom: 10),
+          //       padding: EdgeInsets.symmetric(horizontal: 20),
+          //       child: searchArea(),
+          //     ),
+          //     SizedBox(height: 20),
+          //
+          //
+          //     /**********************************************************************/
+          //     ValueListenableBuilder(
+          //         valueListenable: promosLoading,
+          //         builder: (context, isLoading, _) {
+          //           return isLoading ?
+          //           SizedBox(
+          //               height: 106,
+          //               child: Center(
+          //                   child: CircularProgressIndicator()
+          //               )
+          //           ) :
+          //           PromosWidget(promos: promos,);
+          //         }
+          //     ),
+          //
+          //     /**********************************************************************/
+          //
+          //     SizedBox(height: 20),
+          //
+          //
+          //
+          //     Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 20),
+          //       child: Row(
+          //         children: [
+          //           Text("الفئات", style: Theme.of(context,)
+          //               .textTheme.bodyLarge?.copyWith(
+          //             fontWeight: FontWeight.w800,
+          //             // color: Colors.white,
+          //           ),),
+          //           SizedBox(width: 10,),
+          //           SvgPicture.asset("assets/icons/arrow.svg", width: 14, height: 12),
+          //         ],
+          //       ),
+          //     ),
+          //
+          //     SizedBox(height: 20),
+          //
+          //     /**********************************************************************/
+          //     SizedBox(
+          //       height: 39,
+          //       child: ListView.separated(
+          //         padding: EdgeInsets.symmetric(horizontal: 20),
+          //         scrollDirection: Axis.horizontal,
+          //         physics: const AlwaysScrollableScrollPhysics(
+          //           parent: BouncingScrollPhysics(),
+          //         ),
+          //         itemBuilder: (BuildContext context, int index) {
+          //           return Container(
+          //             // width: 113,
+          //             padding: EdgeInsets.only(left: 10, top: 5, right: 5, bottom: 5),
+          //             decoration: BoxDecoration(
+          //               color: HexColor.fromHex(AppTheme.primaryColor),
+          //               borderRadius: BorderRadius.circular(20),
+          //               // border: Border.all(color: HexColor.fromHex(AppTheme.borderColor)),
+          //             ),
+          //             child: Row(
+          //               children: [
+          //
+          //                 ClipOval(
+          //                   child: SvgPicture.asset(
+          //                     'assets/icons/filter1.svg',
+          //                     width: 20, // Specify width and height
+          //                     height: 20,
+          //                     fit: BoxFit.cover,
+          //                   ),
+          //                 ),
+          //                 SizedBox(width: 10,),
+          //                 Text("التجار الرائجون",
+          //                   style:  Theme.of(context,).textTheme.bodySmall?.copyWith(
+          //                     color: Colors.white,
+          //                     fontWeight: FontWeight.w500,
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           );
+          //
+          //           // Container(
+          //           //   // width: 113,
+          //           //   padding: EdgeInsets.only(left: 10, top: 5, right: 5, bottom: 5),
+          //           //   decoration: BoxDecoration(
+          //           //     // color: HexColor.fromHex("#E5864C"),
+          //           //     borderRadius: BorderRadius.circular(20),
+          //           //     border: Border.all(color: HexColor.fromHex(AppTheme.borderColor)),
+          //           //   ),
+          //           //   child: Row(
+          //           //     children: [
+          //           //
+          //           //       // CircleAvatar(
+          //           //       //   backgroundImage: const SvgPicture.asset('assets/images/your_image.svg'),
+          //           //       // ),
+          //           //       ClipOval(
+          //           //         child: SvgPicture.asset(
+          //           //           'assets/icons/filter3.svg',
+          //           //           width: 20, // Specify width and height
+          //           //           height: 20,
+          //           //           fit: BoxFit.cover,
+          //           //         ),
+          //           //       ),
+          //           //       SizedBox(width: 10,),
+          //           //       Text("التجار الرائجون",
+          //           //         style:  Theme.of(context,).textTheme.bodySmall?.copyWith(
+          //           //           color: AppTheme.primaryColor,
+          //           //           fontWeight: FontWeight.w500,
+          //           //         ),
+          //           //       ),
+          //           //     ],
+          //           //   ),
+          //           // ),
+          //
+          //
+          //         },
+          //         separatorBuilder: (BuildContext context, int index) {
+          //           return SizedBox(width: 10,);
+          //         },
+          //         itemCount: 3,
+          //
+          //       ),
+          //     ),
+          //     /**********************************************************************/
+          //
+          //     SizedBox(height: 20),
+          //
+          //     /**********************************************************************/
+          //     GridView.builder(
+          //       shrinkWrap: true,
+          //       physics: const NeverScrollableScrollPhysics(),
+          //       padding: const EdgeInsets.all(10),
+          //       // itemCount is essential for letting the grid know the total size
+          //       itemCount: 100,
+          //       // gridDelegate controls the layout (number of columns, spacing)
+          //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //         crossAxisCount: 2,       // Number of columns
+          //         crossAxisSpacing: 10,    // Horizontal space between items
+          //         mainAxisSpacing: 10,     // Vertical space between items
+          //         childAspectRatio: 1.0,   // Width/Height ratio (1.0 = square)
+          //       ),
+          //       // itemBuilder creates items on demand as you scroll
+          //       itemBuilder: (BuildContext context, int index) {
+          //         return Container(
+          //           alignment: Alignment.center,
+          //           decoration: BoxDecoration(
+          //             color: Colors.blue[100 * (index % 9)],
+          //             borderRadius: BorderRadius.circular(8),
+          //           ),
+          //           child: Text('Item $index'),
+          //         );
+          //       },
+          //     ),
+          //     /**********************************************************************/
+          //
+          //
+          //     // PagingListener(
+          //     //   controller: _pagingController,
+          //     //   builder: (context, state, fetchNext) {
+          //     //     return PagedListView<int,DealProductModel>(
+          //     //       physics: const NeverScrollableScrollPhysics(),
+          //     //       shrinkWrap: true,
+          //     //       fetchNextPage: fetchNext,
+          //     //       builderDelegate: PagedChildBuilderDelegate(
+          //     //         itemBuilder: (context, item, index) {
+          //     //           return Container(
+          //     //               margin: EdgeInsets.symmetric(vertical: 10),
+          //     //               child: pushUpAnimation(SingleItemShoppingList(dealProductModel: item,)));
+          //     //         },
+          //     //
+          //     //       ),
+          //     //        state: state,
+          //     //     );
+          //     //   },
+          //     // ),
+          //   ],
+          // ),
         ),
       ),
+
+
+
     );
   }
 
@@ -275,6 +684,6 @@ class HomePage extends StatelessWidget {
       },
     );
   }
-
-
 }
+
+

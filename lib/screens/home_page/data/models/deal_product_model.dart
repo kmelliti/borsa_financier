@@ -31,6 +31,7 @@ class DealProductModel {
   DateTime updatedAt;
   bool isFavorite;
   Product product;
+  double rating;
 
   DealProductModel({
     required this.id,
@@ -55,6 +56,7 @@ class DealProductModel {
     required this.updatedAt,
     required this.isFavorite,
     required this.product,
+    required this.rating,
   });
 
   factory DealProductModel.fromJson(Map<String, dynamic> json) => DealProductModel(
@@ -80,6 +82,7 @@ class DealProductModel {
     updatedAt: DateTime.parse(json["updated_at"]),
     isFavorite: json["is_favorite"],
     product: Product.fromJson(json["product"]),
+    rating: json["rating"],
   );
 
   Map<String, dynamic> toJson() => {

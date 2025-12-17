@@ -175,8 +175,12 @@ class AppTranslation extends Translations {
       "months_ago": "منذ @n شهر",
       "years_ago": "منذ @n سنة",
       "user_ratings":"تقييم العملاء",
-      "search":"بحث"
+      "search":"بحث",
 
+      "home":"الرئيسية",
+      "orders":"الطلبات",
+      "favourite":"المفضلة",
+      "help":"المساعدة",
 
 
     },

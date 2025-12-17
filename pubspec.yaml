@@ -47,6 +47,7 @@ dependencies:
   infinite_scroll_pagination: ^5.1.1
   image_color_builder: any
   equatable: ^2.0.7
+  custom_dots_indicator: ^1.0.2
 
 
 

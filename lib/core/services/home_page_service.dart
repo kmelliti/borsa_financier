@@ -14,21 +14,50 @@ class HomePageService {
 
   Future<List<DealProductModel>> getDealProducts(int pageKey, Map<String, dynamic>? value) async {
     int page = pageKey;
+    print("page: $page");
     if(value != null){
       page = 1;
     }
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?page=$page",queryParameters: value);
-      log("response filters for ${value} page key ${pageKey} ${response.data}");
+      // final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?page=$page",queryParameters: value);
+      // log("response filters for ${value} page key ${pageKey} ${response.data}");
+
+      return page == 1 ? [
+        DealProductModel(id: 1, merchantId: 1, productId: 1, quantity: 1, quantitySold: 1, wholesalePrice: "100", retailPrice: "101", minInvestment: null, totalInvested: "100", targetAmount: "targetAmount", status: "status", offerStartAt: null, offerEndAt: null, isDeleted: 0, deletedAt: null, createdBy: 1, updatedBy: 1, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, rating: 4.5, product: Product(id: 1, merchantId: 1, productCategorieId: 1, sku: "sku", name: "59.99 دولار", description: "كولد برو بالتوت العليق والكريمة", costBasis: "costBasis", isDeleted: 0, createdBy: 1, updatedBy: null, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), productPictures: [ProductPicture(id: 1, productId: 1, picture: "assets/icons/a2.png", createdAt: DateTime.now(), updatedAt: DateTime.now())])),
+        DealProductModel(id: 2, merchantId: 1, productId: 1, quantity: 1, quantitySold: 1, wholesalePrice: "100", retailPrice: "101", minInvestment: null, totalInvested: "100", targetAmount: "targetAmount", status: "status", offerStartAt: null, offerEndAt: null, isDeleted: 0, deletedAt: null, createdBy: 1, updatedBy: 1, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, rating: 5,product: Product(id: 1, merchantId: 1, productCategorieId: 1, sku: "sku", name: "name", description: "description", costBasis: "costBasis", isDeleted: 0, createdBy: 1, updatedBy: null, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), productPictures: [ProductPicture(id: 1, productId: 1, picture: "assets/icons/aa1.png", createdAt: DateTime.now(), updatedAt: DateTime.now())])),
+        DealProductModel(id: 3, merchantId: 1, productId: 1, quantity: 1, quantitySold: 1, wholesalePrice: "100", retailPrice: "101", minInvestment: null, totalInvested: "100", targetAmount: "targetAmount", status: "status", offerStartAt: null, offerEndAt: null, isDeleted: 0, deletedAt: null, createdBy: 1, updatedBy: 1, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, rating: 3.8,product: Product(id: 1, merchantId: 1, productCategorieId: 1, sku: "sku", name: "name", description: "description", costBasis: "costBasis", isDeleted: 0, createdBy: 1, updatedBy: null, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), productPictures: [ProductPicture(id: 1, productId: 1, picture: "assets/icons/aa1.png", createdAt: DateTime.now(), updatedAt: DateTime.now())])),
+        DealProductModel(id: 4, merchantId: 1, productId: 1, quantity: 1, quantitySold: 1, wholesalePrice: "100", retailPrice: "101", minInvestment: null, totalInvested: "100", targetAmount: "targetAmount", status: "status", offerStartAt: null, offerEndAt: null, isDeleted: 0, deletedAt: null, createdBy: 1, updatedBy: 1, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, rating: 2.1,product: Product(id: 1, merchantId: 1, productCategorieId: 1, sku: "sku", name: "name", description: "description", costBasis: "costBasis", isDeleted: 0, createdBy: 1, updatedBy: null, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), productPictures: [ProductPicture(id: 1, productId: 1, picture: "assets/icons/a2.png", createdAt: DateTime.now(), updatedAt: DateTime.now())])),
+        DealProductModel(id: 5, merchantId: 1, productId: 1, quantity: 1, quantitySold: 1, wholesalePrice: "100", retailPrice: "101", minInvestment: null, totalInvested: "100", targetAmount: "targetAmount", status: "status", offerStartAt: null, offerEndAt: null, isDeleted: 0, deletedAt: null, createdBy: 1, updatedBy: 1, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), isFavorite: false, rating: 3,product: Product(id: 1, merchantId: 1, productCategorieId: 1, sku: "sku", name: "name", description: "description", costBasis: "costBasis", isDeleted: 0, createdBy: 1, updatedBy: null, deletedBy: null, createdAt: DateTime.now(), updatedAt: DateTime.now(), productPictures: [ProductPicture(id: 1, productId: 1, picture: "assets/icons/a2.png", createdAt: DateTime.now(), updatedAt: DateTime.now())])),
+      ] : [];
+
+      // return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
+    } catch (e, s) {
+      log("$e $s");
+      throw e;
+    }
+  }
+
+  Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
+    try {
+      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?id=$dealId");
       return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
     } catch (e, s) {
       log("$e $s");
       throw e;
     }
-  }  Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
+  }
+
+  Future<List> getPromos() async {
+
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?id=$dealId");
-      return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
+
+      await Future.delayed(Duration(seconds: 3));
+
+      return [
+        {"title": "لا تفوت فرصة آيفون 17!", "save": "20%", "color": "#E5864C"},
+        {"title": "أشهى مشروبات ستاربكس® بانتظارك!", "save": "20%", "color": "#0B6648"},
+        {"title": "لا تفوت فرصة آيفون 17!", "save": "20%", "color": "#0000FF"},
+      ];
     } catch (e, s) {
       log("$e $s");
       throw e;

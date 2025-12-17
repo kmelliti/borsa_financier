@@ -11,8 +11,16 @@ class HomePageController {
   HomePageController(this._homePageService);
 
   Future<List<DealProductModel>> getDealProducts(int pageKey, Map<String, dynamic>? value) async {
+
+    List aa = await _homePageService.getDealProducts(pageKey,value);
+    print("responseeeee: ${aa}");
     return await _homePageService.getDealProducts(pageKey,value);
   }
+
+  Future<List> getPromos() async {
+    return await _homePageService.getPromos();
+  }
+
   Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
     return await _homePageService.getRelatedDeals(dealId);
   }

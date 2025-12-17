@@ -6,24 +6,36 @@ import 'package:get/get.dart';
 
 typedef OnItemTapped = void Function(int index);
 class CustomBottomNav extends StatefulWidget {
-  const CustomBottomNav({super.key, required this.onItemTapped});
+  CustomBottomNav({super.key, required this.onItemTapped, required this.items, required this.selectedIndex});
   final OnItemTapped onItemTapped;
+  final List items;
+  int selectedIndex;
+
+
+
   @override
   State<CustomBottomNav> createState() => _CustomBottomNavState();
 }
 
 class _CustomBottomNavState extends State<CustomBottomNav> {
-  int _selectedIndex = 0;
 
-  final items = [
-    {'icon': 'assets/icons/shop.svg', 'label': 'mass_shopping'.tr},
-    {'icon': 'assets/icons/wallet.svg', 'label': 'my_wallet'.tr},
-    {'icon': 'assets/icons/money.svg', 'label': 'my_deals'.tr},
-    {'icon': 'assets/icons/account.svg', 'label': 'my_account'.tr},
-  ];
+  // int _selectedIndex = 2;
+
+
+
+  // final items = [
+  //   {'icon': 'assets/icons/shop.svg', 'label': 'mass_shopping'.tr},
+  //   {'icon': 'assets/icons/wallet.svg', 'label': 'my_wallet'.tr},
+  //   {'icon': 'assets/icons/money.svg', 'label': 'my_deals'.tr},
+  //   {'icon': 'assets/icons/account.svg', 'label': 'my_account'.tr},
+  //   {'icon': 'assets/icons/account.svg', 'label': 'my_account'.tr},
+  // ];
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Container(
       constraints: BoxConstraints(
           maxHeight: 120
@@ -41,13 +53,15 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: List.generate(items.length, (index) {
-          final item = items[index];
-          final selected = _selectedIndex == index;
+        children: List.generate(widget.items.length, (index) {
+          final item = widget.items[index];
+          final selected = widget.selectedIndex == index;
+
+          // print("selected: $selected");
 
           return GestureDetector(
             onTap: () {
-              setState(() => _selectedIndex = index);
+              setState(() => widget.selectedIndex = index);
 
               widget.onItemTapped(index)
 ;            },

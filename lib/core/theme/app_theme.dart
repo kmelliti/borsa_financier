@@ -23,6 +23,7 @@ class AppTheme {
   // Colors
   static final String textFieldBorder = "#CDCCE0";
   static final String textFieldSelectedBorder = "#8A899F";
+  static final String borderColor = "#CDCCE0";
   static final String primaryColor = "#2A2767";
   static final String secondaryColor = "#928FD0";
   static final String borderGrey = "#C4C4C4";
@@ -32,6 +33,8 @@ class AppTheme {
   static final String appBackGroundColor = "#FBFBFB";
   static final String darkGrey = "#7F7F7F";
   static final String hintColor2 = "#717088";
+  static final String itemBorderColor = "#F3F3F4";
+  static final String textColor = "#1E1D33";
 
 
   // Text Styles
@@ -48,7 +51,9 @@ class AppTheme {
       _cairoTextStyle(fontSize: 16, fontWeight: FontWeight.normal);
 
   static TextStyle get bodyMedium =>
-      _cairoTextStyle(fontSize: 14, fontWeight: FontWeight.normal);
+      _cairoTextStyle(fontSize: 14, fontWeight: FontWeight.bold);
+  static TextStyle get bodySmall =>
+      _cairoTextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
   // Button Styles
   static ButtonStyle get filledButtonStyle => ElevatedButton.styleFrom(
@@ -92,8 +97,19 @@ class AppTheme {
         titleLarge: titleLarge,
         bodyLarge: bodyLarge,
         bodyMedium: bodyMedium,
+        bodySmall: bodySmall,
       ),
     ),
+    // textTheme: GoogleFonts.robotoTextTheme(
+    //   ThemeData.light().textTheme.copyWith(
+    //     displayLarge: displayLarge,
+    //     displayMedium: displayMedium,
+    //     titleLarge: titleLarge,
+    //     bodyLarge: bodyLarge,
+    //     bodyMedium: bodyMedium,
+    //     bodySmall: bodySmall,
+    //   ),
+    // ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: HexColor.fromHex(primaryColor),
     ),
@@ -151,6 +167,7 @@ class AppTheme {
         titleLarge: titleLarge.copyWith(color: Colors.white),
         bodyLarge: bodyLarge.copyWith(color: Colors.white70),
         bodyMedium: bodyMedium.copyWith(color: Colors.white70),
+        bodySmall: bodySmall.copyWith(color: Colors.white70),
       ),
     ),
     colorScheme: ColorScheme.fromSeed(

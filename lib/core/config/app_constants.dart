@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:borsa_now_bis/core/models/lookup_model.dart';
-final ValueNotifier<int> indexWidget = ValueNotifier(0);
+final ValueNotifier<int> indexWidget = ValueNotifier(2);
 
 final String spUser = "user";
 final String spToken = "token";

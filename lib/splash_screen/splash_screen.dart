@@ -50,15 +50,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
     bool isLoggedIn = appServices.getToken() != null;
     Future.delayed(Duration(seconds: 4), () {
-      if (isLoggedIn) {
+      // if (isLoggedIn) {
         WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
           Get.offNamed(AppRoutes.mainScreen);
         });
-      } else {
-        WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
-          Get.offNamed(AppRoutes.login);
-        });
-      }
+      // } else {
+      //   WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
+      //     Get.offNamed(AppRoutes.login);
+      //   });
+      // }
 
     });
   }
