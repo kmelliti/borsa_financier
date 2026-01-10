@@ -66,7 +66,7 @@ class AppTranslation extends Translations {
       "account_info": "معلومات الحساب",
       "send_request": 'أرسل الطلب',
       "request_sent": "تم إرسال طلب",
-      "request_sent_body": "طلب  وصلنا بنجاح، تابع إشعاراتك للتحديثات القادمة",
+      "request_sent_body": "الطلب وصلنا بنجاح، تابع إشعاراتك للتحديثات القادمة",
       "follow_requests": "متابعة الطلبات",
       "fund_request": "طلب تمويل",
       "apply_request_now": "قدّم طلبك الآن",
@@ -141,7 +141,7 @@ class AppTranslation extends Translations {
       "iban_confirmation":"إعادة تأكيد رقم الآيبان",
       "male":"ذكر",
       "female":"أنثى",
-      "error_title":"حدث خطأ",
+
       "error_body":"لقد حدث خطأ أثناء معالجة الطلب ، الرجاء إعادة المحاولة",
       "ok":"حسنا",
       "account_created_title":"تم إنشاء الحساب بنجاح",
@@ -184,7 +184,24 @@ class AppTranslation extends Translations {
       "wish_list_and_favorites":"قائمة الرغبات والمفضلة",
       "are_you_sure_you_want_to_remove_this_favourite":"هل أنت متأكد أنك تريد إزالة هذا المنتج من المفضلة؟",
       "yes_remove":"نعم، إزالة",
-      "no_keep":"لا، احتفظ به"
+      "no_keep":"لا، احتفظ به",
+      "no_data":"لا توجد بيانات",
+      "error_title":"حدث خطأ أثناء الإرسال",
+     "error_body2": "عذرًا، لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى",
+      "enter_amount":"أدخل المبلغ",
+      "select_account":"إختر حساب",
+      "january": "يناير",
+      "february": "فبراير",
+      "march": "مارس",
+      "april": "أبريل",
+      "may": "مايو",
+      "june": "يونيو",
+      "july": "يوليو",
+      "august": "أغسطس",
+      "september": "سبتمبر",
+      "october": "أكتوبر",
+      "november": "نوفمبر",
+      "december": "ديسمبر"
 
 
 

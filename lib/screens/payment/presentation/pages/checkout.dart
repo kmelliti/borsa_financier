@@ -1,4 +1,5 @@
 import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
+import 'package:borsa_now_bis/screens/payment/presentation/pages/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,9 @@ class _CheckoutState extends State<Checkout> {
 
    @override
   void initState() {
+
+
+
      desiredQuantity = ValueNotifier<int>(double.parse(widget.deal.minInvestment).toInt());
      inputQuantity = TextEditingController(text: widget.deal.minInvestment);
     super.initState();
@@ -140,8 +144,12 @@ class _CheckoutState extends State<Checkout> {
 
                 ElevatedButton(
                   onPressed: () {
-                    if(!inputQuantity.text.isNumericOnly || double.parse(inputQuantity.text)<double.parse(widget.deal.minInvestment)){
+                    print("${inputQuantity.text.isNumericOnly} ${double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)} ${double.parse(widget.deal.minInvestment)}");
+                    if( double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)){
                       showErrorDialog(context, "${widget.deal.minInvestment} ${"min_invest_error".tr}" );
+                    }else{
+                      Get.to(PaymentMethodsPage(dealModel: widget.deal,amountInvested: double.parse(inputQuantity.text),));
+
                     }
                   },
                   child: Text("complete_payment".tr),
@@ -396,20 +404,17 @@ class _CheckoutState extends State<Checkout> {
           onTap: () {
             Get.back();
           },
-          child: Hero(
-            tag: "a2",
-            child: Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: HexColor.fromHex(AppTheme.borderGrey),
-                ),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: HexColor.fromHex(AppTheme.borderGrey),
               ),
-              child: Icon(Icons.arrow_back),
             ),
+            child: Icon(Icons.arrow_back),
           ),
         ),
         SizedBox(width: 10),

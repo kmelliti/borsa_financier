@@ -1,5 +1,6 @@
 import 'package:borsa_now_bis/core/services/my_account_services.dart';
 
+import '../../../../core/models/bank_account_model.dart';
 import '../../../../core/models/user_model.dart';
 
 class MyAccountController {
@@ -15,10 +16,20 @@ class MyAccountController {
   Future<UserModel> updateId(String? doc, String number) async {
     return await _myAccountServices.updateId(doc, number);
   }
-  Future<UserModel> updateBank(Map<String, dynamic> params) async {
+  Future<void> updateBank(Map<String, dynamic> params) async {
     return _myAccountServices.updateBank(params);
+  }
+  Future<void> addBank(Map<String, dynamic> params) async {
+    return _myAccountServices.addBank(params);
   }
   Future<void> updatePassword(Map<String, dynamic> params) async {
     return _myAccountServices.updatePassword(params);
   }
+  Future<List<BankAccountModel>> getBankAccounts() async {
+    return _myAccountServices.getBankAccounts();
+  }
+
+
+
+
 }

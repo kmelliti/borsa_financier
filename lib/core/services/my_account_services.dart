@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:dio/dio.dart';
 
 import '../exception/api_exception.dart';
+import '../models/bank_account_model.dart';
 import '../models/user_model.dart';
 
 class MyAccountServices {
   final Dio _dio;
-  final AppServices appServices ;
+  final AppServices appServices;
 
   MyAccountServices(this._dio, this.appServices);
 
@@ -32,7 +35,7 @@ class MyAccountServices {
       }
       UserModel userModel = UserModel.fromJson(response.data['data']);
       appServices.setUser(userModel);
-      return userModel ;
+      return userModel;
     } catch (e) {
       throw e;
     }
@@ -52,16 +55,15 @@ class MyAccountServices {
       UserModel userModel = appServices.getUser();
       userModel.investor = investor;
       appServices.setUser(userModel);
-      return userModel ;
+      return userModel;
     } catch (e) {
       throw e;
     }
   }
+
   Future<UserModel> updateId(String? doc, String number) async {
     try {
-      FormData formData = FormData.fromMap({
-        "id_number": number,
-      });
+      FormData formData = FormData.fromMap({"id_number": number});
       if (doc != null) {
         formData.files.add(
           MapEntry("id_document_path", await MultipartFile.fromFile(doc)),
@@ -79,27 +81,37 @@ class MyAccountServices {
       UserModel userModel = appServices.getUser();
       userModel.investor = investor;
       appServices.setUser(userModel);
-      return userModel ;
+      return userModel;
     } catch (e) {
       throw e;
     }
   }
 
-  Future<UserModel> updateBank(Map<String, dynamic> params) async {
+  Future<void> updateBank(Map<String, dynamic> params) async {
     try {
-      final response = await _dio.post(
-        "BorsaNow/public/api/v1/investor/bank/update/${getLang()}",
+      final response = await _dio.put(
+        "BorsaNow/public/api/v1/investor/banks/update/${getLang()}",
         data: params,
       );
       print("Data ${response.data} ");
       if (response.data["result"] == false) {
         throw ApiException(response.data["message"]);
       }
-      Investor investor = Investor.fromJson(response.data['data']);
-      UserModel userModel = appServices.getUser();
-      userModel.investor = investor;
-      appServices.setUser(userModel);
-      return userModel ;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> addBank(Map<String, dynamic> params) async {
+    try {
+      final response = await _dio.post(
+        "BorsaNow/public/api/v1/investor/banks/add/${getLang()}",
+        data: params,
+      );
+      print("Data ${response.data} ");
+      if (response.data["result"] == false) {
+        throw ApiException(response.data["message"]);
+      }
     } catch (e) {
       throw e;
     }
@@ -115,8 +127,27 @@ class MyAccountServices {
       if (response.data["result"] == false) {
         throw ApiException(response.data["message"]);
       }
-
     } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<BankAccountModel>> getBankAccounts() async {
+    try {
+      final response = await _dio.get(
+        "BorsaNow/public/api/v1/investor/banks/${getLang()}",
+        queryParameters: {
+          "token": appServices.getToken()
+        }
+      );
+      print("Data ${response.data} ");
+      if (response.data["result"] == false) {
+        throw ApiException(response.data["message"]);
+      }
+
+      return bankAccountModelFromJson(jsonEncode(response.data['data']));
+    } catch (e,s) {
+      print("Error ${e} $s");
       throw e;
     }
   }

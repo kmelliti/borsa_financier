@@ -137,36 +137,39 @@ class _AddressStepState extends State<AddressStep> {
             ),
           ),
           const SizedBox(height: 20),
-          Autocomplete<LookUpModel>(
-         //   initialValue: TextEditingValue(text: cities.isNotEmpty ?cities.first.name :"" ) ,
-            displayStringForOption: _displayStringForOption,
+          ButtonTheme(
+            alignedDropdown: true,
+            child: Autocomplete<LookUpModel>(
+                     //   initialValue: TextEditingValue(text: cities.isNotEmpty ?cities.first.name :"" ) ,
+              displayStringForOption: _displayStringForOption,
 
-            fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-              return TextFormField(
-                controller: controller,
-                focusNode: focusNode,
+              fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                return TextFormField(
+                  controller: controller,
+                  focusNode: focusNode,
 
-                decoration: InputDecoration(
-                  hintText: 'city'.tr,
+                  decoration: InputDecoration(
+                    hintText: 'city'.tr,
 
-                ).applyDefaults(Theme.of(context).inputDecorationTheme),
-              );
-            },
-            
+                  ).applyDefaults(Theme.of(context).inputDecorationTheme),
+                );
+              },
 
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              return cities
-                  .where(
-                    (city) => city.name.toLowerCase().contains(
-                      textEditingValue.text.toLowerCase(),
-                    ),
-                  )
-                  .toList();
-            },
-            onSelected: (LookUpModel city) {
-              _cityController.text = city.name;
-              cityId = city.id;
-            },
+
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                return cities
+                    .where(
+                      (city) => city.name.toLowerCase().contains(
+                        textEditingValue.text.toLowerCase(),
+                      ),
+                    )
+                    .toList();
+              },
+              onSelected: (LookUpModel city) {
+                _cityController.text = city.name;
+                cityId = city.id;
+              },
+            ),
           ),
           // TextFormField(
           //   controller: _cityController,

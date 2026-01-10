@@ -133,6 +133,135 @@ void handleException(BuildContext context, Object e) {
     showErrorDialog(context, null);
   }
 }
+final List<String> monthList = [
+  'january'.tr,
+  'february'.tr,
+  'march'.tr,
+  'april'.tr,
+  'may'.tr,
+  'june'.tr,
+  'july'.tr,
+  'august'.tr,
+  'september'.tr,
+  'october'.tr,
+  'november'.tr,
+  'december'.tr,
+];
+
+Widget dateSelector(Function(String month) onMonthSelected, Function(int year) onYearSelected,[bool isMonthSelectable = true]) {
+
+  final int baseYear = 2025;
+  List<int> listOfYears =   List<int>.generate(
+    DateTime.now().year - baseYear + 1,
+        (index) => DateTime.now().year - index,
+  );
+
+  int _selectedMonth= DateTime.now().month;
+  int _selectedYear = DateTime.now().year;
+  final ValueNotifier<bool> shakeUp = ValueNotifier(false);
+
+  return ValueListenableBuilder(
+    valueListenable: shakeUp,
+    builder: (context,_,_) {
+      return Row(
+        children: [
+          isMonthSelectable ?Expanded(
+            child: Container(
+
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  value: _selectedMonth,
+                  isDense: false,
+
+                  itemHeight: 50,
+                  hint: Text("month".tr),
+                  icon: Icon(Icons.keyboard_arrow_down),
+
+                  onChanged: (int? newValue) {
+
+                    _selectedMonth = newValue??DateTime.now().month;
+
+
+                    shakeUp.value = !shakeUp.value;
+                    onMonthSelected(newValue.toString());
+
+                  },
+                  items:
+                  <int>[
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+
+                  ].map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(monthList[value]),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ):Container(),
+          isMonthSelectable ? SizedBox(width: 20) : Container(),
+          Expanded(
+            child: Container(
+
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  isDense: false,
+
+                  value: _selectedYear,
+
+
+                  itemHeight: 50,
+                  hint: Text("year".tr),
+                  icon: Icon(Icons.keyboard_arrow_down),
+
+                  onChanged: (int? newValue) {
+
+                    _selectedYear = newValue??DateTime.now().year;
+                    print("Selected yeaaat = $_selectedYear");
+                    onYearSelected(_selectedYear);
+                    shakeUp.value = !shakeUp.value;
+
+
+
+                  },
+                  items:
+                  listOfYears.map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  );
+}
 
 Widget getDiscountedPriceInText(double price) {
   return Stack(

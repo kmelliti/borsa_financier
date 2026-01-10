@@ -44,6 +44,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Ammount invested ${widget.amountInvested}");
     return Scaffold(
       backgroundColor: const Color(0xfffafafa),
       appBar: AppBar(
@@ -200,11 +201,13 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
                         if (selectedMethod != -1) {
                           Map<String, dynamic> params = {};
 
+
                           params.putIfAbsent(
                             "amount_invested",
                             () =>
-                                widget.amountInvested ??
-                                widget.dealModel.minInvestment,
+                                widget.amountInvested == null ?widget.dealModel.minInvestment * int.parse(widget.dealModel.wholesalePrice):
+                                widget.amountInvested!   * double.parse(widget.dealModel.wholesalePrice)
+
                           );
 
                           params.putIfAbsent(

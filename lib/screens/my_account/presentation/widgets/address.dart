@@ -29,7 +29,7 @@ class _AddressState extends State<Address> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context,true),
       body: Container(
         width: double.infinity,
         padding: EdgeInsets.all(20),

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:borsa_now_bis/core/config/utils.dart';
@@ -25,6 +26,12 @@ class HomePage extends StatelessWidget {
         (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey,filters.value),
   );
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
