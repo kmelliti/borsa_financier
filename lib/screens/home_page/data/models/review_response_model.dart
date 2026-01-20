@@ -20,7 +20,7 @@ class ReviewResponseModel {
   String path;
   int perPage;
   dynamic prevPageUrl;
-  int to;
+  int? to;
   int total;
 
   ReviewResponseModel({

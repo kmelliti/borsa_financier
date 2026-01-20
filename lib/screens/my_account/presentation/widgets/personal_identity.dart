@@ -43,7 +43,7 @@ class _PersonalIdentityState extends State<PersonalIdentity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context,true),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),

@@ -333,7 +333,7 @@ Widget getPriceInText(double price, [TextStyle? style, double? pictureWidth]) {
         style:
             style ??
             TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
               color: HexColor.fromHex(AppTheme.primaryColor),
               letterSpacing: 0.2,

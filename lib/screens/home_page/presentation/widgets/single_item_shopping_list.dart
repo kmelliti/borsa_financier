@@ -125,14 +125,11 @@ class SingleItemShoppingList extends StatelessWidget {
                     ),
                     SizedBox(width: 10),
                     Expanded(
-                      child: Hero(
-                        tag: "buy_now",
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Get.to(Checkout(deal: dealProductModel));
-                          },
-                          child: Text("buy_now".tr),
-                        ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(Checkout(deal: dealProductModel));
+                        },
+                        child: Text("buy_now".tr),
                       ),
                     ),
                   ],
@@ -175,22 +172,19 @@ class SingleItemShoppingList extends StatelessWidget {
         Positioned(
           top: 20,
           right: 20,
-          child: Hero(
-            tag: "discount",
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              decoration: BoxDecoration(
-                color: HexColor.fromHex("#2CB9A3"),
-                borderRadius: BorderRadius.circular(20),
-              ),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            decoration: BoxDecoration(
+              color: HexColor.fromHex("#2CB9A3"),
+              borderRadius: BorderRadius.circular(20),
+            ),
 
-              child: Text(
-                "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).toString()}% ",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
+            child: Text(
+              "${getPercentage(double.parse(dealProductModel.retailPrice), double.parse(dealProductModel.wholesalePrice)).toString()}% ",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
               ),
             ),
           ),

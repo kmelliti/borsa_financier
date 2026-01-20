@@ -37,7 +37,7 @@ class _PasswordPageState extends State<PasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context,true),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),

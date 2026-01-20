@@ -1,3 +1,4 @@
+import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/screens/home_page/data/models/deal_product_model.dart';
 import 'package:borsa_now_bis/screens/payment/presentation/pages/payment_page.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,6 @@ class _CheckoutState extends State<Checkout> {
 
    @override
   void initState() {
-
-
-
      desiredQuantity = ValueNotifier<int>(double.parse(widget.deal.minInvestment).toInt());
      inputQuantity = TextEditingController(text: widget.deal.minInvestment);
     super.initState();
@@ -148,7 +146,7 @@ class _CheckoutState extends State<Checkout> {
                     if( double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)){
                       showErrorDialog(context, "${widget.deal.minInvestment} ${"min_invest_error".tr}" );
                     }else{
-                      Get.to(PaymentMethodsPage(dealModel: widget.deal,amountInvested: double.parse(inputQuantity.text),));
+                      Get.to(()=>PaymentMethodsPage(dealModel: widget.deal,amountInvested: double.parse(inputQuantity.text),));
 
                     }
                   },
@@ -193,7 +191,7 @@ class _CheckoutState extends State<Checkout> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Center(
-                                child: Image.asset("assets/icons/aa1.png"),
+                                child: Image.network("$baseUrlImage/${widget.deal.product.productPictures.first.picture}"),
                               ),
                             ),
                           ),

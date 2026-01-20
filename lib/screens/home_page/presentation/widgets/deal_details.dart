@@ -52,9 +52,9 @@ class _DealDetailsState extends State<DealDetails> {
         height: 45,
         margin: EdgeInsets.symmetric(horizontal: 20),
         child: FloatingActionButton.extended(
-          heroTag: "buy_now",
+
           onPressed: () {
-            Get.to(PaymentMethodsPage(dealModel: dealModel,));
+            Get.to(()=>PaymentMethodsPage(dealModel: dealModel,));
           },
           backgroundColor: HexColor.fromHex(AppTheme.primaryColor),
           foregroundColor: Colors.white,

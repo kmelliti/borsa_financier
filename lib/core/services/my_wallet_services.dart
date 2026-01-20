@@ -40,26 +40,7 @@ class MyWalletServices {
         "month":month
 
       });
-     // return charSalesModelFromJson(jsonEncode(response.data['data']));
-      return charSalesModelFromJson(
-        """
-        [
-  { "month": 1,  "total": "1200" },
-  { "month": 2,  "total": "3850" },
-  { "month": 3,  "total": "5100" },
-  { "month": 4,  "total": "4600" },
-  { "month": 5,  "total": "5900" },
-  { "month": 6,  "total": "6300" },
-  { "month": 7,  "total": "7100" },
-  { "month": 8,  "total": "6800" },
-  { "month": 9,  "total": "5400" },
-  { "month": 10, "total": "6000" },
-  { "month": 11, "total": "6550" },
-  { "month": 12, "total": "6700" }
-]
-
-        """
-      );
+      return charSalesModelFromJson(jsonEncode(response.data['data']));
     } catch (e) {
       log(e.toString());
       rethrow;

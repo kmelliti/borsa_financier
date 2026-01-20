@@ -16,7 +16,7 @@ class DealProductModel {
   int quantitySold;
   String wholesalePrice;
   String retailPrice;
-  dynamic minInvestment;
+  String minInvestment;
   String totalInvested;
   String targetAmount;
   String status;

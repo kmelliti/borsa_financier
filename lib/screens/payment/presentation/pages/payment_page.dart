@@ -205,8 +205,8 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
                           params.putIfAbsent(
                             "amount_invested",
                             () =>
-                                widget.amountInvested == null ?widget.dealModel.minInvestment * int.parse(widget.dealModel.wholesalePrice):
-                                widget.amountInvested!   * double.parse(widget.dealModel.wholesalePrice)
+                             widget.amountInvested == null ?double.parse(widget.dealModel.minInvestment.toString())* double.parse(widget.dealModel.wholesalePrice):
+                          widget.amountInvested!   * double.parse(widget.dealModel.wholesalePrice)
 
                           );
 
@@ -254,7 +254,8 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            "${double.parse(widget.dealModel.retailPrice) * double.parse(widget.dealModel.minInvestment)}",
+                            "${ widget.amountInvested == null ?double.parse(widget.dealModel.minInvestment.toString())* double.parse(widget.dealModel.wholesalePrice):
+                            widget.amountInvested!   * double.parse(widget.dealModel.wholesalePrice)}",
                           ),
                           SizedBox(width: 5),
                           SvgPicture.asset(
