@@ -13,7 +13,7 @@ String userModelToJson(UserModel data) => json.encode(data.toJson());
 class UserModel {
   int id;
   String name;
-  String picture;
+  String? picture;
   String phone;
   String email;
   DateTime? birthdate;

@@ -87,7 +87,7 @@ class AuthService{
       appServices.setUser(userModelFromJson(jsonEncode(response.data['data'])));
       return userModelFromJson(jsonEncode(response.data['data']));
     } catch (e,s) {
-      log("$s");
+      log("$e $s");
       throw e;
     }
   }

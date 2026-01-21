@@ -110,7 +110,7 @@ class _MyDealsState extends State<MyDeals> {
                                   color: HexColor.fromHex(AppTheme.primaryColor),
                                 ),
                                 SizedBox(height: 10),
-                                getPriceInText(double.parse(data['total_deals'])),
+                                getPriceInText(double.parse(data['total_deals'].toString())),
                                 SizedBox(height: 10),
 
                                 Text("total_deals".tr),
@@ -137,7 +137,7 @@ class _MyDealsState extends State<MyDeals> {
                                   color: HexColor.fromHex(AppTheme.primaryColor),
                                 ),
                                 SizedBox(height: 10),
-                                getPriceInText(double.parse(data['total_profits'])),
+                                getPriceInText(double.parse(data['total_profits'].toString())),
                                 SizedBox(height: 10),
 
                                 Text("total_gains".tr),
