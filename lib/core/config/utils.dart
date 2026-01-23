@@ -591,7 +591,7 @@ AppBar buildAppBar(BuildContext context, [bool? autoBack = false,Function(String
               },
             ),
     actions: [
-      TweenAnimationBuilder<double>(
+      onSearchSubmitted== null? Container(): TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
         duration: Duration(milliseconds: 300),
         curve: Curves.easeOutBack,

@@ -182,16 +182,16 @@ class _CheckoutState extends State<Checkout> {
                             flex: 1,
                             child: Container(
                               height: 100,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 20,
-                              ),
+                              // padding: EdgeInsets.symmetric(
+                              //   vertical: 10,
+                              //   horizontal: 20,
+                              // ),
                               decoration: BoxDecoration(
                                 color: HexColor.fromHex("#EFEFE3"),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Center(
-                                child: Image.network("$baseUrlImage/${widget.deal.product.productPictures.first.picture}"),
+                                child: Image.network("$baseUrlImage/${widget.deal.product.productPictures.first.picture}",fit: BoxFit.fill,),
                               ),
                             ),
                           ),

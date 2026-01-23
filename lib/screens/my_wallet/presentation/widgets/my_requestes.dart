@@ -58,27 +58,26 @@ class _MyRequestsState extends State<MyRequests>
         position: _slideAnimation,
         child: Column(
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children:
-                    [
-                      dropdownMonth(),
-                      const SizedBox(width: 10),
-                      dropdownYear(),
-                      const SizedBox(width: 10),
-                      dropdownCategory(),
-                    ].map((widget) {
-                      return SlideTransition(
-                        position: _slideAnimation,
-                        child: FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: widget,
-                        ),
-                      );
-                    }).toList(),
-              ),
-            ),
+            dateSelector((month){}, (year){}, true),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     children:
+            //         [
+            //
+            //           const SizedBox(width: 10),
+            //           dropdownCategory(),
+            //         ].map((widget) {
+            //           return SlideTransition(
+            //             position: _slideAnimation,
+            //             child: FadeTransition(
+            //               opacity: _fadeAnimation,
+            //               child: widget,
+            //             ),
+            //           );
+            //         }).toList(),
+            //   ),
+            // ),
             const SizedBox(height: 20),
             SlideTransition(
               position: _slideAnimation,
@@ -130,56 +129,7 @@ class _MyRequestsState extends State<MyRequests>
     );
   }
 
-  Widget dropdownMonth() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: null,
-          icon: const Icon(Icons.keyboard_arrow_down_sharp),
-          hint: Text("month".tr),
-          items: const [
-            DropdownMenuItem(value: 'Small', child: Text('Small')),
-            DropdownMenuItem(value: 'Medium', child: Text('Medium')),
-            DropdownMenuItem(value: 'Large', child: Text('Large')),
-          ],
-          onChanged: (value) {},
-        ),
-      ),
-    );
-  }
-
-  Widget dropdownYear() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: null,
-          icon: const Icon(Icons.keyboard_arrow_down_sharp),
-          hint: Text("year".tr),
-
-          items: const [
-            DropdownMenuItem(value: 'Small', child: Text('Small')),
-            DropdownMenuItem(value: 'Medium', child: Text('Medium')),
-            DropdownMenuItem(value: 'Large', child: Text('Large')),
-          ],
-          onChanged: (value) {},
-        ),
-      ),
-    );
-  }
 
   Widget dropdownCategory() {
     return Container(
@@ -235,8 +185,8 @@ class _MyRequestsState extends State<MyRequests>
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
+                      horizontal: 25,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: HexColor.fromHex("#F8F8FF"),
@@ -267,7 +217,7 @@ class _MyRequestsState extends State<MyRequests>
                           ).textTheme.titleMedium?.copyWith(
                             color: HexColor.fromHex(AppTheme.primaryColor),
                             fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -283,13 +233,13 @@ class _MyRequestsState extends State<MyRequests>
                   Text("date".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#1E1D33"),
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),),
                   Spacer(),
                   Text("12/12/2022",style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#5E5D68"),
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   )),
                 ],
               ),
@@ -299,7 +249,7 @@ class _MyRequestsState extends State<MyRequests>
                   Text("amount".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#1E1D33"),
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),),
                   Spacer(),
                   Row(
@@ -307,7 +257,7 @@ class _MyRequestsState extends State<MyRequests>
                       Text("1000.0",style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: HexColor.fromHex("#5E5D68"),
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       )),
                      SizedBox(width: 5,),
                      SvgPicture.asset("assets/icons/sar.svg", width: 18,color: HexColor.fromHex("#5E5D68"),),
@@ -321,13 +271,13 @@ class _MyRequestsState extends State<MyRequests>
                   Text("account_details".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#1E1D33"),
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),),
                   Spacer(),
                   Text("بنك الراجحي",style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#5E5D68"),
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   )),
                 ],
               ),
@@ -366,7 +316,7 @@ class _MyRequestsState extends State<MyRequests>
         break;
     }
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(

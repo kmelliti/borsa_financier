@@ -46,9 +46,7 @@ class _MyDealsState extends State<MyDeals> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, null, (v){
-
-      }),
+      appBar: buildAppBar(context, null,),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
