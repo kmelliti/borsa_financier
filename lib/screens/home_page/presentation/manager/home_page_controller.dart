@@ -18,6 +18,7 @@ class HomePageController {
   HomePageController(this._homePageService);
 
   Future<List<DealProductModel>> getDealProducts(int pageKey, Map<String, dynamic>? value) async {
+    print("Values of filters ${value}");
     return await _homePageService.getDealProducts(pageKey,value);
   }
   Future<List<DealProductModel>> getRelatedDeals(int dealId) async {

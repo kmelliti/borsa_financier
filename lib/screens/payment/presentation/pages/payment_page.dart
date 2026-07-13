@@ -221,7 +221,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
                           );
                           params.putIfAbsent(
                             "quantity",
-                            () => widget.dealModel.quantity,
+                            () => widget.amountInvested ??widget.dealModel.minInvestment ,
                           );
                           params.putIfAbsent(
                             "transaction_id",

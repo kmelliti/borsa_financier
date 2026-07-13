@@ -60,6 +60,7 @@ class AppTranslation extends Translations {
       "date": "التاريخ",
       "amount": "المبلغ",
       "account_details": " تفاصيل الحساب البنكي",
+      "funding_entity":"جهة التمويل",
       "rejection_date": "تاريخ الرفض",
       "acceptance_date": "تاريخ الموافقة",
       "add_new_bank": "إضافة حساب بنكي جديد",
@@ -201,7 +202,15 @@ class AppTranslation extends Translations {
       "september": "سبتمبر",
       "october": "أكتوبر",
       "november": "نوفمبر",
-      "december": "ديسمبر"
+      "december": "ديسمبر",
+      "no_prod_for_now":"لا يوجد منتجات حاليا",
+      "no_bank_add_bank":"لا يوجد بنوك في القائمة. الرجاء إضافة بنك",
+      "requested":"قيد الانتظار",
+      "enter_mobile_email":"يرجى إدخال البريد الإلكتروني أو رقم الهاتف",
+      "wrong_otp":"رمز التحقق خاطئ",
+      "pass_changed":"تم تغيير كلمة المرور بنجاح",
+      "price_to_customer":"سعر البيع للمستهلك"
+
 
 
 

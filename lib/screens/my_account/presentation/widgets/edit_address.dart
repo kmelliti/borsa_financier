@@ -60,6 +60,9 @@ class _EditAddressState extends State<EditAddress> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: Form(
           key: _formKey,
           child: Column(
@@ -183,6 +186,10 @@ class _EditAddressState extends State<EditAddress> {
                   ) {
                     return TextFormField(
                       controller: cityController,
+                      onTapOutside: (_){
+                        FocusManager.instance.primaryFocus?.unfocus();
+
+                      },
                       focusNode: focusNode,
                       validator: (value) {
                         if (value == null || value.isEmpty) {

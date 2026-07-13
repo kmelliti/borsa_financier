@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:borsa_now_bis/screens/sign_up/presentation/controller/sign_up_controller.dart';
@@ -8,6 +9,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -100,10 +102,37 @@ with SingleTickerProviderStateMixin{
                         valueListenable: userImage,
                         builder: (context, img, _) {
                           return InkWell(
+                            borderRadius: BorderRadius.circular(60),
                             onTap: () {
-                              _picker.pickImage(source: ImageSource.gallery).then((value) {
+                              _picker.pickImage(source: ImageSource.gallery).then((value) async{
                                 if (value != null) {
-                                  userImage.value = value.path;
+                                  CroppedFile? cropped = await ImageCropper().cropImage( sourcePath: value.path,
+
+                                    uiSettings: [
+                                      AndroidUiSettings(
+                                        toolbarTitle: 'edit_image'.tr,
+                                        toolbarColor: Colors.deepOrange,
+                                        toolbarWidgetColor: Colors.white,
+
+                                        cropStyle: CropStyle.circle,
+                                        lockAspectRatio: true,
+                                        hideBottomControls: false,
+
+                                      ),
+                                      IOSUiSettings(
+                                        title: 'edit_image'.tr,
+                                        cancelButtonTitle: 'cancel'.tr,
+                                        cropStyle: CropStyle.circle,
+
+                                        doneButtonTitle: 'done'.tr,
+                                        aspectRatioLockEnabled: true,
+                                      ),
+
+                                    ],
+                                  );
+
+                                  userImage.value =cropped?.path?? value.path;
+
                                 }
                               });
                             },
@@ -198,7 +227,7 @@ with SingleTickerProviderStateMixin{
                       if (value == null) {
                         return;
                       }
-                      _birthdayController.text = DateFormat('dd-MM-yyyy').format(value);
+                      _birthdayController.text = df.format(value);
                     });
                   },
                   validator: (value) {

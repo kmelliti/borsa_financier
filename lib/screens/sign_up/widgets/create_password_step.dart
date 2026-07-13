@@ -110,7 +110,7 @@ class CreatePasswordStep extends StatelessWidget {
                                 );
                                 _signUpController.showSuccessDialog(context);
                               } catch (e, s) {
-                                showErrorDialog(context, "error_body".tr);
+                  handleException(context, e);
 
                                 log(e.toString());
                                 log(s.toString());

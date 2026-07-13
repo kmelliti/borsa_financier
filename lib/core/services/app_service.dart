@@ -20,7 +20,7 @@ class AppServices {
 
     try {
       final response = await _dio.get(
-        'BorsaNow/public/api/v1/general/cities/${getLang()}',
+        'api/v1/general/cities/${getLang()}',
       );
 
       if (response.statusCode == 200) {
@@ -39,7 +39,7 @@ class AppServices {
 
     try {
       final response = await _dio.get(
-        'BorsaNow/public/api/v1/general/banks/${getLang()}',
+        'api/v1/general/banks/${getLang()}',
       );
 
 
@@ -59,7 +59,7 @@ class AppServices {
 
     try {
       final response = await _dio.get(
-        'BorsaNow/public/api/v1/general/product/categories/${getLang()}',
+        'api/v1/general/product/categories/${getLang()}',
       );
 
 

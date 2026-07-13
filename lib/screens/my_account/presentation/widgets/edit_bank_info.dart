@@ -28,6 +28,7 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
   final _formKey = GlobalKey<FormState>();
   final _bankNameController = TextEditingController();
   final _accountNumberController = TextEditingController();
+  final _ibanNumberController = TextEditingController();
 
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
 
@@ -36,6 +37,7 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
   @override
   void initState() {
     userModel = _appServices.getUser();
+
     if (widget.bankAccount != null) {
       bankId = widget.bankAccount!.bankId;
       _bankNameController.text =
@@ -47,6 +49,7 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
               ?.name ??
           "";
       _accountNumberController.text = widget.bankAccount!.accountNumber;
+      _ibanNumberController.text = widget.bankAccount!.ibanNumber;
     }
 
     super.initState();
@@ -63,7 +66,13 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding:  EdgeInsets.only(
+        left: 20.0,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+
       child: Form(
         key: _formKey,
         child: Column(
@@ -131,15 +140,60 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
             ),
             const SizedBox(height: 8),
             TextFormField(
+
               controller: _accountNumberController,
               onTapOutside: (_) {
                 FocusScope.of(context).unfocus();
               },
-              decoration: InputDecoration(hintText: "enter_account_number".tr),
+
+              decoration: InputDecoration(hintText: "enter_account_number".tr,
+                  prefixText: "SA ",
+                prefixStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600
+                ),
+
+              ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'please_enter_account_number'.tr;
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            // iban Number
+            Text(
+              "iban_number".tr,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: HexColor.fromHex("#717088"),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+
+              controller: _ibanNumberController,
+              onTapOutside: (_) {
+                FocusScope.of(context).unfocus();
+              },
+
+              decoration: InputDecoration(hintText: "enter_iban_number".tr,
+
+                prefixStyle: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600
+                ),
+
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'enter_iban_number'.tr;
                 }
                 return null;
               },
@@ -161,19 +215,19 @@ class _AddEditBankInfoState extends State<AddEditBankInfo> {
                           Map<String, dynamic> params = {
                             "bank_id": bankId,
                             "account_number": _accountNumberController.text,
+                            "iban_number": _ibanNumberController.text,
                           };
 
                           try {
-                            if(widget.bankAccount != null){
+                            if (widget.bankAccount != null) {
                               params["user_bank_id"] = widget.bankAccount!.id;
 
                               log("account params ${params}");
                               await controller.updateBank(params);
-
-                            }else{
+                            } else {
                               await controller.addBank(params);
                             }
-                            Get.back();
+                            Get.back(result: true);
                           } catch (e) {
                             handleException(context, e);
                           }

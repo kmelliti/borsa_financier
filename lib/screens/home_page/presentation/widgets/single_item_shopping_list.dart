@@ -13,6 +13,7 @@ import '../../data/models/deal_product_model.dart';
 typedef OnDetailsClicked = void Function();
 
 class SingleItemShoppingList extends StatelessWidget {
+
   const SingleItemShoppingList({
     super.key,
     required this.dealProductModel,
@@ -76,7 +77,7 @@ class SingleItemShoppingList extends StatelessWidget {
                     ),
                     SizedBox(width: 10),
                     Text(
-                      dealProductModel.quantity.toString(),
+                      (dealProductModel.quantity - dealProductModel.quantitySold).toString(),
                       style: TextStyle(
                         color: HexColor.fromHex("#5E5D68"),
                         fontSize: 16,
@@ -124,7 +125,7 @@ class SingleItemShoppingList extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 10),
-                    Expanded(
+                    isRelatedItem ? Container() : Expanded(
                       child: ElevatedButton(
                         onPressed: () {
                           Get.to(Checkout(deal: dealProductModel));
@@ -151,6 +152,8 @@ class SingleItemShoppingList extends StatelessWidget {
           ),
           builder: (context, snap) {
             return Container(
+              height: 200,
+              margin: EdgeInsets.only(top: 20),
 
               decoration: BoxDecoration(
              //   color: snap.data,

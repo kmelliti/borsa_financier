@@ -19,9 +19,10 @@ class LoginPage extends StatelessWidget {
 
   final LoginController _loginController = getIt();
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
-  final ValueNotifier<bool> obscurePass = ValueNotifier(false);
+  final ValueNotifier<bool> obscurePass = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
+
 
     return Scaffold(
       body: SafeArea(
@@ -34,8 +35,13 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(
                   height: 60,
                 ),
-                SvgPicture.asset(
-                  "assets/icons/logo.svg",
+                // SvgPicture.asset(
+                //   "assets/icons/logo.svg",
+                //   height: 90,
+                //   fit: BoxFit.cover,
+                // ),
+                Image.asset(
+                  "assets/icons/logo_cropped.png",
                   height: 90,
                   fit: BoxFit.cover,
                 ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_color_builder/image_color_builder.dart';
 
 import '../../../../core/config/app_constants.dart';
 import '../../../../core/config/utils.dart';
@@ -29,43 +28,7 @@ class SingleMyDeal extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Expanded(
-              //   flex: 1,
-              //   child: ImageColorBuilder(
-              //     url:
-              //         "${baseUrlImage}/${deal.deal.product.productPictures.first.picture}",
-              //     placeholder: (c, s) {
-              //       return Container(
-              //         height: 100,
-              //         width: 100,
-              //         decoration: BoxDecoration(
-              //           color: HexColor.fromHex("#F4F4F4"),
-              //           borderRadius: BorderRadius.circular(20),
-              //           border: Border.all(
-              //             color: HexColor.fromHex(AppTheme.borderGrey),
-              //           ),
-              //         ),
-              //       );
-              //     },
-              //     builder: (c, image, color) {
-              //       return Container(
-              //         height: 100,
-              //         width: 100,
-              //
-              //         decoration: BoxDecoration(
-              //           color: color,
-              //           borderRadius: BorderRadius.circular(20),
-              //           border: Border.all(color: HexColor.fromHex("#F4F4F4")),
-              //         ),
-              //         child: ClipRRect(
-              //           borderRadius: BorderRadius.circular(20),
-              //
-              //           child: Center(child: image),
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
+
               Expanded(
                 flex: 1,
                 child: Container(
@@ -73,12 +36,12 @@ class SingleMyDeal extends StatelessWidget {
                //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
                    // color: HexColor.fromHex("#EFEFE3"),
-                    color: Colors.black12,
+                    border: Border.all(color: HexColor.fromHex(AppTheme.borderGreyLight)),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Center(child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network("${baseUrlImage}/${deal.deal.product.productPictures.first.picture}", ))),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: Image.network("${baseUrlImage}/${deal.deal.product.productPictures.first.picture}",fit: BoxFit.cover )),
                 ),
               ),
               SizedBox(width: 10),
@@ -96,7 +59,7 @@ class SingleMyDeal extends StatelessWidget {
                         style: Theme.of(
                           context,
                         ).textTheme.displayLarge?.copyWith(
-                          color: HexColor.fromHex(AppTheme.primaryColor),
+                           color:Colors.black,
                           fontWeight: FontWeight.w800,
                           fontSize: 20,
                           overflow: TextOverflow.ellipsis,
@@ -132,7 +95,7 @@ class SingleMyDeal extends StatelessWidget {
                 getPriceInText(
                   double.parse(deal.deal.retailPrice),
                   Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: HexColor.fromHex(AppTheme.primaryColor),
+                     color: HexColor.fromHex(AppTheme.primaryColor),
                   ),
                   12,
                 ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:borsa_now_bis/core/config/utils.dart';
+import 'package:borsa_now_bis/core/di/di.dart';
+import 'package:borsa_now_bis/screens/login/presentation/manager/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +28,7 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
   bool _canResendCode = false;
   Timer? _timer;
   int _start = 59;
+  final LoginController _controller = getIt();
 
   @override
   void initState() {
@@ -137,8 +140,15 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
             fontWeight: FontWeight.w500,
           ),),
           TextButton(
-            onPressed: () {
-              // TODO: Resend code functionality
+            onPressed: ()async {
+
+              try{
+                _controller.code = await _controller.sendCodeResetPassword(_controller.params!);
+
+              }catch (e){
+                handleException(context, e);
+              }
+
               setState(() {
                 _start = 60; // Reset timer
               });
@@ -159,8 +169,12 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
               );
               if (allFilled) {
                 final code = getCode();
+                if(code != _controller.code){
+                  showErrorDialog(context, "wrong_otp".tr);
+                  return ;
+                }
                 widget.onNextTap();
-                // TODO: Send code to server
+
                 print('Verification code: $code');
               }
             },

@@ -24,8 +24,8 @@ class _BankInfoStepState extends State<BankInfoStep> {
   final _formKey = GlobalKey<FormState>();
   final _bankNameController = TextEditingController();
   final _accountNumberController = TextEditingController();
-  final _ibanNumberController = TextEditingController();
-  final _ibanConfirmationController = TextEditingController();
+  // final _ibanNumberController = TextEditingController();
+  // final _ibanConfirmationController = TextEditingController();
     int? bankId;
   @override
   void initState() {
@@ -34,8 +34,8 @@ class _BankInfoStepState extends State<BankInfoStep> {
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_){
       _bankNameController.text = _signUpController.accountCreationParams.bankName ?? '';
       _accountNumberController.text = _signUpController.accountCreationParams.accountNumber ?? '';
-      _ibanNumberController.text = _signUpController.accountCreationParams.ibanNumber ?? '';
-      _ibanConfirmationController.text = _signUpController.accountCreationParams.ibanNumber ?? '';
+      // _ibanNumberController.text = _signUpController.accountCreationParams.ibanNumber ?? '';
+      // _ibanConfirmationController.text = _signUpController.accountCreationParams.ibanNumber ?? '';
     });
   }
   @override
@@ -108,6 +108,7 @@ class _BankInfoStepState extends State<BankInfoStep> {
           const SizedBox(height: 20),
           TextFormField(
             controller: _accountNumberController,
+            keyboardType: TextInputType.text,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "field_is_required".tr;
@@ -119,34 +120,34 @@ class _BankInfoStepState extends State<BankInfoStep> {
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _ibanNumberController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "field_is_required".tr;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              labelText: 'iban_number'.tr,
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _ibanConfirmationController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "field_is_required".tr;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              labelText: 'iban_confirmation'.tr,
-              border: OutlineInputBorder(),
-            ),
-          ),
+          // const SizedBox(height: 20),
+          // TextFormField(
+          //   controller: _ibanNumberController,
+          //   validator: (value) {
+          //     if (value == null || value.isEmpty) {
+          //       return "field_is_required".tr;
+          //     }
+          //     return null;
+          //   },
+          //   decoration: InputDecoration(
+          //     labelText: 'iban_number'.tr,
+          //     border: OutlineInputBorder(),
+          //   ),
+          // ),
+          // const SizedBox(height: 20),
+          // TextFormField(
+          //   controller: _ibanConfirmationController,
+          //   validator: (value) {
+          //     if (value == null || value.isEmpty) {
+          //       return "field_is_required".tr;
+          //     }
+          //     return null;
+          //   },
+          //   decoration: InputDecoration(
+          //     labelText: 'iban_confirmation'.tr,
+          //     border: OutlineInputBorder(),
+          //   ),
+          // ),
           Spacer(),
           Row(
             children: [
@@ -176,7 +177,7 @@ class _BankInfoStepState extends State<BankInfoStep> {
                     _signUpController.accountCreationParams.bankId = bankId;
                     _signUpController.accountCreationParams.bankName = _bankNameController.text;
                     _signUpController.accountCreationParams.accountNumber = _accountNumberController.text;
-                    _signUpController.accountCreationParams.ibanNumber = _ibanNumberController.text;
+                  //  _signUpController.accountCreationParams.ibanNumber = _ibanNumberController.text;
 
 
                     widget.onNextStep();

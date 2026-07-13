@@ -1,9 +1,14 @@
+import 'package:borsa_now_bis/core/models/my_request_fund_model.dart';
+import 'package:borsa_now_bis/screens/my_wallet/presentation/manager/my_wallet_controller.dart';
 import 'package:borsa_now_bis/screens/my_wallet/presentation/widgets/request_withdraw.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../../../core/config/app_constants.dart';
 import '../../../../core/config/utils.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/theme/animated_buttons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'fund_request.dart';
@@ -19,14 +24,25 @@ class MyRequests extends StatefulWidget {
 
 class _MyRequestsState extends State<MyRequests>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  final MyWalletController _controller = getIt();
+
+  late final _pagingController = PagingController<int, MyRequestFundModel>(
+    getNextPageKey:
+        (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => _controller.getMyFundRequests(pageKey),
+  );
+
+
+  late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  ValueNotifier<bool> shakeUp = ValueNotifier(false);
+
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -34,19 +50,19 @@ class _MyRequestsState extends State<MyRequests>
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
 
-    _controller.forward();
+    _animationController.forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -56,45 +72,78 @@ class _MyRequestsState extends State<MyRequests>
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: Column(
-          children: [
-            dateSelector((month){}, (year){}, true),
-            // SingleChildScrollView(
-            //   scrollDirection: Axis.horizontal,
-            //   child: Row(
-            //     children:
-            //         [
-            //
-            //           const SizedBox(width: 10),
-            //           dropdownCategory(),
-            //         ].map((widget) {
-            //           return SlideTransition(
-            //             position: _slideAnimation,
-            //             child: FadeTransition(
-            //               opacity: _fadeAnimation,
-            //               child: widget,
-            //             ),
-            //           );
-            //         }).toList(),
-            //   ),
-            // ),
-            const SizedBox(height: 20),
-            SlideTransition(
-              position: _slideAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: buildButtons(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              dateSelector((month){}, (year){}, true),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     children:
+              //         [
+              //
+              //           const SizedBox(width: 10),
+              //           dropdownCategory(),
+              //         ].map((widget) {
+              //           return SlideTransition(
+              //             position: _slideAnimation,
+              //             child: FadeTransition(
+              //               opacity: _fadeAnimation,
+              //               child: widget,
+              //             ),
+              //           );
+              //         }).toList(),
+              //   ),
+              // ),
+              const SizedBox(height: 20),
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: buildButtons(),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            SlideTransition(
-              position: _slideAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: singleRequest(context),
+              const SizedBox(height: 20),
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child:  PagingListener(
+
+                    controller: _pagingController,
+
+
+                    builder: (context, state, fetchNext) {
+                      return PagedListView<int,MyRequestFundModel>(
+
+                        physics: NeverScrollableScrollPhysics(),
+                        fetchNextPage: fetchNext,
+                        shrinkWrap: true,
+                        builderDelegate: PagedChildBuilderDelegate(
+                          noItemsFoundIndicatorBuilder: (_){
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 80.0),
+                                child: Text("no_data".tr),
+                              ),
+                            );
+                          },
+                          itemBuilder: (context, item, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: singleRequest(context,item),
+                            );
+                          },
+
+                        ),
+                        state: state,
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -108,8 +157,9 @@ class _MyRequestsState extends State<MyRequests>
         }, child: Text("withdraw".tr)),
         const SizedBox(height: 10),
         AnimatedButton(
-          onPressed: () {
-            Get.to(FundRequest());
+          onPressed: () async{
+            await Get.to(()=>FundRequest());
+            _pagingController.refresh();
           },
           style: AppTheme.outlinedButtonStyle,
           child: Row(
@@ -153,7 +203,7 @@ class _MyRequestsState extends State<MyRequests>
     );
   }
 
-  Widget singleRequest(BuildContext context) {
+  Widget singleRequest(BuildContext context, MyRequestFundModel item) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0.95, end: 1.0),
       duration: const Duration(milliseconds: 300),
@@ -224,7 +274,7 @@ class _MyRequestsState extends State<MyRequests>
                     ),
                   ),
 
-                  getStatusWidget(Status.accepted)
+                  getStatusWidget(item.status)
                 ],
               ),
               SizedBox(height: 30,),
@@ -236,7 +286,7 @@ class _MyRequestsState extends State<MyRequests>
                     fontWeight: FontWeight.w500,
                   ),),
                   Spacer(),
-                  Text("12/12/2022",style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  Text(df.format(item.createdAt),style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#5E5D68"),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -254,7 +304,7 @@ class _MyRequestsState extends State<MyRequests>
                   Spacer(),
                   Row(
                     children: [
-                      Text("1000.0",style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      Text(item.amount,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: HexColor.fromHex("#5E5D68"),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -268,13 +318,13 @@ class _MyRequestsState extends State<MyRequests>
               SizedBox(height: 20,),
               Row(
                 children: [
-                  Text("account_details".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  Text("funding_entity".tr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#1E1D33"),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),),
                   Spacer(),
-                  Text("بنك الراجحي",style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  Text(item.entity.name,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: HexColor.fromHex("#5E5D68"),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -290,30 +340,32 @@ class _MyRequestsState extends State<MyRequests>
 
 
   
-  Widget getStatusWidget(Status stat){
+  Widget getStatusWidget(String stat){
     String status;
     switch (stat) {
-      case Status.accepted:
+      case "accepted":
         status = "accepted".tr;
         break;
-      case Status.rejected:
+      case "rejected":
         status = "rejected".tr;
         break;
-      case Status.pending:
-        status = "pending".tr;
-        break;
+      case "requested":
+        status = "requested".tr;
+      default :
+       status = stat;
     }
-    Color color;
+    Color? color;
     switch (stat) {
-      case Status.accepted:
+      case "accepted":
         color = HexColor.fromHex("#4BC27E");
         break;
-      case Status.rejected:
+      case "rejected":
         color = HexColor.fromHex("#E62F29");
         break;
-      case Status.pending:
+      case "requested":
         color = HexColor.fromHex("#FF7700");
-        break;
+      default :
+        color = Colors.black;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),

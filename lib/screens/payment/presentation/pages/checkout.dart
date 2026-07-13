@@ -11,7 +11,8 @@ import '../../../../core/theme/app_theme.dart';
 import '../manager/checkout_controller.dart';
 
 class Checkout extends StatefulWidget {
-   Checkout({super.key, required this.deal});
+  Checkout({super.key, required this.deal});
+
   final DealProductModel deal;
 
   @override
@@ -21,20 +22,24 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   final CheckoutController controller = getIt<CheckoutController>();
 
-  late ValueNotifier<int> desiredQuantity ;
-   late TextEditingController inputQuantity ;
+  late ValueNotifier<int> desiredQuantity;
 
-   @override
+  late TextEditingController inputQuantity;
+
+  @override
   void initState() {
-     desiredQuantity = ValueNotifier<int>(double.parse(widget.deal.minInvestment).toInt());
-     inputQuantity = TextEditingController(text: widget.deal.minInvestment);
+    desiredQuantity =
+        ValueNotifier<int>(double.parse(widget.deal.minInvestment).toInt());
+    inputQuantity = TextEditingController(text: widget.deal.minInvestment);
     super.initState();
   }
+
   dispose() {
     desiredQuantity.dispose();
     inputQuantity.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +69,11 @@ class _CheckoutState extends State<Checkout> {
               SizedBox(width: 10),
               Text(
                 "request_review".tr,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(
                   color: HexColor.fromHex(AppTheme.primaryColor),
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.2,
@@ -76,91 +85,98 @@ class _CheckoutState extends State<Checkout> {
         ),
       ),
       bottomNavigationBar: ValueListenableBuilder(
-        valueListenable: desiredQuantity,
-        builder: (context,quantity,child) {
-          return Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: HexColor.fromHex("#F0F0F0"),
+          valueListenable: desiredQuantity,
+          builder: (context, quantity, child) {
+            return Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: HexColor.fromHex("#F0F0F0"),
+                  ),
                 ),
               ),
-            ),
-            constraints: BoxConstraints(maxHeight: 250),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "sub_total".tr,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
-                        color: HexColor.fromHex(AppTheme.primaryColor),
+              constraints: BoxConstraints(maxHeight: 250),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "sub_total".tr,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),
                       ),
-                    ),
-                    getPriceInText(
-                      quantity * double.parse(widget.deal.retailPrice),
-                      TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
-                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      getPriceInText(
+                        quantity * double.parse(widget.deal.retailPrice),
+                        TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),
+                        15,
                       ),
-                      15,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Divider(),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "total".tr,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
-                        color: HexColor.fromHex(AppTheme.primaryColor),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Divider(),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "total".tr,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),
                       ),
-                    ),
-                    getPriceInText(
-                      quantity * double.parse(widget.deal.retailPrice),
-                      TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: HexColor.fromHex(AppTheme.primaryColor),
+                      getPriceInText(
+                        quantity * double.parse(widget.deal.retailPrice),
+                        TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),
+                        15,
                       ),
-                      15,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
+                    ],
+                  ),
+                  SizedBox(height: 20),
 
-                ElevatedButton(
-                  onPressed: () {
-                    print("${inputQuantity.text.isNumericOnly} ${double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)} ${double.parse(widget.deal.minInvestment)}");
-                    if( double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)){
-                      showErrorDialog(context, "${widget.deal.minInvestment} ${"min_invest_error".tr}" );
-                    }else{
-                      Get.to(()=>PaymentMethodsPage(dealModel: widget.deal,amountInvested: double.parse(inputQuantity.text),));
+                  ElevatedButton(
+                    onPressed: () {
+                      //print("${inputQuantity.text.isNumericOnly} ${double.parse(inputQuantity.text) < double.parse(widget.deal.minInvestment)} ${double.parse(widget.deal.minInvestment)}");
 
-                    }
-                  },
-                  child: Text("complete_payment".tr),
-                ),
-              ],
-            ),
-          );
-        }
+                      if (double.parse(inputQuantity.text) <
+                          double.parse(widget.deal.minInvestment)) {
+                        showErrorDialog(context,
+                            "${widget.deal.minInvestment} ${"min_invest_error"
+                                .tr}");
+                      } else {
+                        Get.to(() =>
+                            PaymentMethodsPage(dealModel: widget.deal,
+                              amountInvested: double.parse(
+                                  inputQuantity.text),));
+                      }
+                    },
+                    child: Text("complete_payment".tr),
+                  ),
+                ],
+              ),
+            );
+          }
       ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: SingleChildScrollView(
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -191,7 +207,10 @@ class _CheckoutState extends State<Checkout> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Center(
-                                child: Image.network("$baseUrlImage/${widget.deal.product.productPictures.first.picture}",fit: BoxFit.fill,),
+                                child: Image.network(
+                                  "$baseUrlImage/${widget.deal.product
+                                      .productPictures.first.picture}",
+                                  fit: BoxFit.fill,),
                               ),
                             ),
                           ),
@@ -206,9 +225,13 @@ class _CheckoutState extends State<Checkout> {
                                   Expanded(
                                     child: Text(
                                       widget.deal.product.name,
-                                      style: Theme.of(
+                                      style: Theme
+                                          .of(
                                         context,
-                                      ).textTheme.displayLarge?.copyWith(
+                                      )
+                                          .textTheme
+                                          .displayLarge
+                                          ?.copyWith(
                                         color: HexColor.fromHex(
                                           AppTheme.primaryColor,
                                         ),
@@ -243,9 +266,13 @@ class _CheckoutState extends State<Checkout> {
                           children: [
                             Text(
                               "min_quantity".tr,
-                              style: Theme.of(
+                              style: Theme
+                                  .of(
                                 context,
-                              ).textTheme.bodySmall?.copyWith(
+                              )
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                 color: HexColor.fromHex(AppTheme.primaryColor),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
@@ -253,9 +280,13 @@ class _CheckoutState extends State<Checkout> {
                             ),
                             Text(
                               widget.deal.minInvestment.toString(),
-                              style: Theme.of(
+                              style: Theme
+                                  .of(
                                 context,
-                              ).textTheme.bodySmall?.copyWith(
+                              )
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                 color: HexColor.fromHex(AppTheme.primaryColor),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
@@ -279,19 +310,28 @@ class _CheckoutState extends State<Checkout> {
                           children: [
                             Text(
                               "available_pcs".tr,
-                              style: Theme.of(
+                              style: Theme
+                                  .of(
                                 context,
-                              ).textTheme.headlineSmall?.copyWith(
+                              )
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
                                 color: HexColor.fromHex(AppTheme.primaryColor),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                             ),
                             Text(
-                                widget.deal.quantity.toString(),
-                              style: Theme.of(
+                              (widget.deal.quantity - widget.deal.quantitySold)
+                                  .toString(),
+                              style: Theme
+                                  .of(
                                 context,
-                              ).textTheme.headlineSmall?.copyWith(
+                              )
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
                                 color: HexColor.fromHex(AppTheme.primaryColor),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
@@ -308,26 +348,83 @@ class _CheckoutState extends State<Checkout> {
                   padding: const EdgeInsets.all(20.0),
                   child: Text(
                     "set_quanity".tr,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
                       color: HexColor.fromHex(AppTheme.primaryColor),
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
                   ),
                 ),
-                TextFormField(
-                  controller: inputQuantity,
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    if(value.isNotEmpty){
-                      desiredQuantity.value = int.parse(value);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: inputQuantity,
+                        readOnly: true,
+
+                        keyboardType: TextInputType.number,
+                        onTapOutside: (_) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            desiredQuantity.value = double.parse(value).toInt();
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 10,)    ,
+                    InkWell(
+                      onTap: (){
+                        if(desiredQuantity.value < widget.deal.quantity - widget.deal.quantitySold){
+                          int currentValue = desiredQuantity.value;
+                          desiredQuantity.value = currentValue +double.parse(widget.deal.minInvestment).toInt();
+                          inputQuantity.text = desiredQuantity.value.toString();
+                        }
+                      },
+                      child: Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: HexColor.fromHex(
+                              AppTheme.primaryColor)),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Text("+")),
+                      ),
+                    ),
+                    SizedBox(width: 10,)
+                    ,
+                    InkWell(
+                      onTap: (){
+                        if(desiredQuantity.value > double.parse(widget.deal.minInvestment).toInt()){
+                          int currentValue = desiredQuantity.value;
+                          desiredQuantity.value = currentValue -double.parse(widget.deal.minInvestment).toInt();
+                          inputQuantity.text = desiredQuantity.value.toString();
+                        }
+                      },
+                      child: Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: HexColor.fromHex(
+                              AppTheme.primaryColor)),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Text("-")),
+                      ),
+                    )
+
+                  ],
                 ),
                 SizedBox(height: 20),
                 Padding(
@@ -338,7 +435,11 @@ class _CheckoutState extends State<Checkout> {
                       SizedBox(width: 10),
                       Text(
                         "gift_or_coupon".tr,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(
                           color: HexColor.fromHex(AppTheme.primaryColor),
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -362,18 +463,27 @@ class _CheckoutState extends State<Checkout> {
                       Expanded(
                         flex: 2,
                         child: TextField(
+                          onTapOutside: (_) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
                           decoration: InputDecoration(
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             hintText: "code_coupon".tr,
-                            hintStyle: Theme.of(
+                            hintStyle: Theme
+                                .of(
                               context,
-                            ).textTheme.bodySmall?.copyWith(
+                            )
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
                               color: HexColor.fromHex(AppTheme.hintColor2),
                             ),
                           ).applyDefaults(
-                            Theme.of(context).inputDecorationTheme,
+                            Theme
+                                .of(context)
+                                .inputDecorationTheme,
                           ),
                         ),
                       ),
@@ -418,7 +528,11 @@ class _CheckoutState extends State<Checkout> {
         SizedBox(width: 10),
         Text(
           "request_review".tr,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme
+              .of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(
             color: HexColor.fromHex(AppTheme.primaryColor),
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,

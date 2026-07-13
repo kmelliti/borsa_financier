@@ -1,3 +1,4 @@
+import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/edit_address.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/edit_personal_info.dart';
@@ -92,7 +93,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "1234567",
+                              user.investor.buildingNumber,
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -129,7 +130,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "3000",
+                              user.investor.unitNumber,
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -166,7 +167,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "شارع الملك فهد",
+                              user.investor.street,
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -202,7 +203,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "العليا",
+                              user.investor.district,
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -239,7 +240,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "الرياض",
+                              cities.firstWhereOrNull((e)=>e.id == user.investor.cityId)?.name??"",
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -276,7 +277,7 @@ class _AddressState extends State<Address> {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              "11111",
+                              user.investor.postalCode,
                               style: Theme.of(
                                 context,
                               ).textTheme.labelLarge?.copyWith(
@@ -309,6 +310,7 @@ class _AddressState extends State<Address> {
 
                   );
                 });
+                print("The new user ${user}");
                 if(newUser != null){
                   setState(() {
                     user = newUser;

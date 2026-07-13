@@ -511,6 +511,7 @@ void showLogoutAlert(BuildContext context) {
                 AuthService authService = getIt();
                 authService.signOut();
                 Get.offAllNamed(AppRoutes.login);
+                indexWidget.value = 0;
               },
               child: Text(
                 "logout".tr,

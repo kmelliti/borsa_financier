@@ -8,12 +8,12 @@ import 'package:borsa_now_bis/screens/home_page/presentation/widgets/single_item
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:image_color_builder/image_color_builder.dart';
 import 'package:readmore/readmore.dart';
 
 import '../../../../core/config/app_constants.dart';
 import '../../../../core/config/bottom_navigator.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../payment/presentation/pages/checkout.dart';
 import '../../../payment/presentation/pages/payment_page.dart';
 import '../../data/models/deal_product_model.dart';
 
@@ -54,7 +54,7 @@ class _DealDetailsState extends State<DealDetails> {
         child: FloatingActionButton.extended(
 
           onPressed: () {
-            Get.to(()=>PaymentMethodsPage(dealModel: dealModel,));
+            Get.to(()=>Checkout(deal: dealModel,));
           },
           backgroundColor: HexColor.fromHex(AppTheme.primaryColor),
           foregroundColor: Colors.white,
@@ -87,24 +87,13 @@ class _DealDetailsState extends State<DealDetails> {
                     },
                     children:
                         widget.dealModel.product.productPictures.map((im) {
-                          return ImageColorBuilder(
-                            url: "${baseUrlImage}/${im.picture}",
-                            fit: BoxFit.cover,
-                            builder:
-                                (
-                                  BuildContext context,
-                                  Image? image,
-                                  Color? imageColor,
-                                ) {
-                                  return Container(
+                          return Container(
 
-                                    // padding: EdgeInsets.symmetric(vertical: 20),
-                                    decoration: BoxDecoration(
-                                      color: imageColor,
-                                    ),
-                                    child: image,
-                                  );
-                                },
+                            // padding: EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                            ),
+                            child: Image.network("${baseUrlImage}/${im.picture}"),
                           );
 
                         }).toList(),
@@ -136,21 +125,21 @@ class _DealDetailsState extends State<DealDetails> {
                         ),
                       ),
                       Spacer(),
-                      Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-
-                          border: Border.all(
-                            color: HexColor.fromHex(AppTheme.borderGrey),
-                          ),
-                        ),
-                        child: SvgPicture.asset("assets/icons/share.svg"),
-                      ),
+                      // Container(
+                      //   width: 50,
+                      //   height: 50,
+                      //   padding: EdgeInsets.all(15),
+                      //   margin: EdgeInsets.symmetric(horizontal: 10),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.white,
+                      //     shape: BoxShape.circle,
+                      //
+                      //     border: Border.all(
+                      //       color: HexColor.fromHex(AppTheme.borderGrey),
+                      //     ),
+                      //   ),
+                      //   child: SvgPicture.asset("assets/icons/share.svg"),
+                      // ),
                       InkWell(
                         onTap: () async{
                           isFavorite.value = !isFavorite.value;
@@ -265,6 +254,28 @@ class _DealDetailsState extends State<DealDetails> {
                             fontSize: 14,
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+
+                    children: [
+                      Text("price_to_customer".tr,style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),),
+                      SizedBox(width: 5),
+                      Text(":"),
+                      SizedBox(width: 5),
+                      getPriceInText(
+                        double.parse(widget.dealModel.storePrice),
+
+                        TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),15
                       ),
                     ],
                   ),
@@ -389,6 +400,8 @@ class _DealDetailsState extends State<DealDetails> {
                 }
                 if(snap.connectionState == ConnectionState.done&&!snap.hasError){
                   List<DealProductModel> relatedDeals = snap.data!;
+                  relatedDeals..removeWhere((test)=> test.id == dealModel.id);
+
                   if(relatedDeals.isEmpty){
                     return Container();
                   }

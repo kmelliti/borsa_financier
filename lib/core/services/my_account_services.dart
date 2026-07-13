@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:borsa_now_bis/core/config/app_constants.dart';
 import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/services/app_service.dart';
 import 'package:dio/dio.dart';
@@ -26,7 +27,7 @@ class MyAccountServices {
         );
       }
       final response = await _dio.post(
-        "BorsaNow/public/api/v1/investor/information/update/${getLang()}",
+        "api/v1/investor/information/update/${getLang()}",
         data: formData,
       );
       print("Data ${response.data} ");
@@ -44,7 +45,7 @@ class MyAccountServices {
   Future<UserModel> updateAddress(Map<String, dynamic> params) async {
     try {
       final response = await _dio.put(
-        "BorsaNow/public/api/v1/investor/address/update/${getLang()}",
+        "api/v1/investor/address/update/${getLang()}",
         data: params,
       );
       print("Data ${response.data} ");
@@ -61,16 +62,16 @@ class MyAccountServices {
     }
   }
 
-  Future<UserModel> updateId(String? doc, String number) async {
+  Future<UserModel> updateId(String? doc, String number,DateTime birthdate) async {
     try {
-      FormData formData = FormData.fromMap({"id_number": number});
+      FormData formData = FormData.fromMap({"id_number": number, "birthdate": df.format(birthdate!)});
       if (doc != null) {
         formData.files.add(
           MapEntry("id_document_path", await MultipartFile.fromFile(doc)),
         );
       }
       final response = await _dio.post(
-        "BorsaNow/public/api/v1/investor/identification/update/${getLang()}",
+        "api/v1/investor/identification/update/${getLang()}",
         data: formData,
       );
       print("Data ${response.data} ");
@@ -79,6 +80,9 @@ class MyAccountServices {
       }
       Investor investor = Investor.fromJson(response.data['data']);
       UserModel userModel = appServices.getUser();
+
+        userModel.birthdate = birthdate;
+
       userModel.investor = investor;
       appServices.setUser(userModel);
       return userModel;
@@ -90,7 +94,7 @@ class MyAccountServices {
   Future<void> updateBank(Map<String, dynamic> params) async {
     try {
       final response = await _dio.put(
-        "BorsaNow/public/api/v1/investor/banks/update/${getLang()}",
+        "api/v1/investor/banks/update/${getLang()}",
         data: params,
       );
       print("Data ${response.data} ");
@@ -105,7 +109,7 @@ class MyAccountServices {
   Future<void> addBank(Map<String, dynamic> params) async {
     try {
       final response = await _dio.post(
-        "BorsaNow/public/api/v1/investor/banks/add/${getLang()}",
+        "api/v1/investor/banks/add/${getLang()}",
         data: params,
       );
       print("Data ${response.data} ");
@@ -120,7 +124,7 @@ class MyAccountServices {
   Future<void> updatePassword(Map<String, dynamic> params) async {
     try {
       final response = await _dio.put(
-        "BorsaNow/public/api/v1/investor/password/change/${getLang()}",
+        "api/v1/investor/password/change/${getLang()}",
         data: params,
       );
       print("Data ${response.data} ");
@@ -135,7 +139,7 @@ class MyAccountServices {
   Future<List<BankAccountModel>> getBankAccounts() async {
     try {
       final response = await _dio.get(
-        "BorsaNow/public/api/v1/investor/banks/${getLang()}",
+        "api/v1/investor/banks/${getLang()}",
         queryParameters: {
           "token": appServices.getToken()
         }

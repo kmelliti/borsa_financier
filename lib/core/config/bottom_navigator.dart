@@ -6,14 +6,20 @@ import 'package:get/get.dart';
 
 typedef OnItemTapped = void Function(int index);
 class CustomBottomNav extends StatefulWidget {
-  const CustomBottomNav({super.key, required this.onItemTapped});
+   CustomBottomNav({super.key, required this.onItemTapped, required this.defaultSelectedTab});
   final OnItemTapped onItemTapped;
+   int defaultSelectedTab ;
   @override
   State<CustomBottomNav> createState() => _CustomBottomNavState();
 }
 
 class _CustomBottomNavState extends State<CustomBottomNav> {
-  int _selectedIndex = 0;
+  late int _selectedIndex ;
+  @override
+  void initState() {
+    _selectedIndex = widget.defaultSelectedTab;
+    super.initState();
+  }
 
   final items = [
     {'icon': 'assets/icons/shop.svg', 'label': 'mass_shopping'.tr},

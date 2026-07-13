@@ -27,6 +27,7 @@ class HomePage extends StatelessWidget {
     fetchPage: (pageKey) => _homePageController.getDealProducts(pageKey,filters.value),
   );
 
+  final TextEditingController _searchController = TextEditingController();
 
 
 
@@ -39,6 +40,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: buildAppBar(context,null,(v){
         log("$v");
+        _searchController.text = v;
         filters.value = {
           "product_name":v
         };
@@ -95,6 +97,11 @@ class HomePage extends StatelessWidget {
 
                       fetchNextPage: fetchNext,
                       builderDelegate: PagedChildBuilderDelegate(
+                        noItemsFoundIndicatorBuilder: (_){
+                          return Center(
+                            child: Text("no_prod_for_now".tr),
+                          );
+                        },
                         itemBuilder: (context, item, index) {
                           return Container(
                               margin: EdgeInsets.symmetric(vertical: 10),
@@ -151,6 +158,13 @@ class HomePage extends StatelessWidget {
                               horizontal: 20.0,
                             ),
                             child: TextField(
+                              controller: _searchController,
+                              onSubmitted: (_){
+                                filters.value = {
+                                  "product_name":_searchController.text
+                                };
+                                _pagingController.refresh();
+                              },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "search_by_product_name".tr,
@@ -164,7 +178,12 @@ class HomePage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              filters.value = {
+                                "product_name":_searchController.text
+                              };
+                              _pagingController.refresh();
+                            },
                             child: AnimatedSwitcher(
                               duration: Duration(milliseconds: 300),
                               child: SvgPicture.asset(

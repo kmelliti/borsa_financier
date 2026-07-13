@@ -30,7 +30,10 @@ class _MainScreenState extends State<MainScreen> {
 
   if(  Get.arguments != null){
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((c){
-      indexWidget.value = Get.arguments;
+      setState(() {
+        indexWidget.value = Get.arguments;
+      });
+
     });
   }
     super.initState();
@@ -57,9 +60,9 @@ class _MainScreenState extends State<MainScreen> {
           }
         },
       ),
-      bottomNavigationBar: CustomBottomNav(onItemTapped: (int index) {
+      bottomNavigationBar: CustomBottomNav(key: Key(Get.arguments?.toString()??"0"),onItemTapped: (int index) {
         indexWidget.value = index;
-      }),
+      }, defaultSelectedTab: Get.arguments ??0,),
     );
   }
 }

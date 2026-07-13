@@ -337,8 +337,8 @@ class _FiltersState extends State<Filters> {
               "invest_min":_reqQuantityRangeValues.start,
               "invest_max":_reqQuantityRangeValues.end,
               "discount":discounted ? 1 :0,
-              "rates":rates.value.map((r)=>r).toList(),
-              "categories":selectedCategory.map((e) => e.id).toList(),
+              "rates":"${[...rates.value.map((r)=>r).toList()]}",
+              "categories":"${[...selectedCategory.map((e) => e.id).toList()]}",
             };
             widget.onFilter(filters);
             Get.back();

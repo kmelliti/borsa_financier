@@ -13,6 +13,7 @@ class BankAccountModel {
   int userId;
   int bankId;
   String accountNumber;
+  String ibanNumber;
 
 
   BankAccountModel({
@@ -20,6 +21,7 @@ class BankAccountModel {
     required this.userId,
     required this.bankId,
     required this.accountNumber,
+    required this.ibanNumber,
 
   });
 
@@ -28,6 +30,7 @@ class BankAccountModel {
     userId: json["user_id"],
     bankId: json["bank_id"],
     accountNumber: json["account_number"],
+    ibanNumber:json.containsKey("iban_number")? json["iban_number"]:"",
 
   );
 
@@ -36,6 +39,7 @@ class BankAccountModel {
     "user_id": userId,
     "bank_id": bankId,
     "account_number": accountNumber,
+    "iban_number": ibanNumber,
 
   };
 }

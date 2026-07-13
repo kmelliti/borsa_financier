@@ -13,8 +13,8 @@ class MyAccountController {
   Future<UserModel> updateAddress(Map<String, dynamic> params) async {
     return await _myAccountServices.updateAddress(params);
   }
-  Future<UserModel> updateId(String? doc, String number) async {
-    return await _myAccountServices.updateId(doc, number);
+  Future<UserModel> updateId(String? doc, String number,DateTime dob) async {
+    return await _myAccountServices.updateId(doc, number,dob);
   }
   Future<void> updateBank(Map<String, dynamic> params) async {
     return _myAccountServices.updateBank(params);

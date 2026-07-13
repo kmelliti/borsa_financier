@@ -18,7 +18,7 @@ class MyDealsService {
     log("params filter ${value}");
 
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/subscribed/${getLang()}?page=$pageKey",queryParameters: value);
+      final response = await _dio.get("/api/v1/investor/deals/subscribed/${getLang()}?page=$pageKey",queryParameters: value);
       log("response filters for ${pageKey} ${(response.data['data']['data'] as List).length}");
       return (response.data['data']['data'] as List).map((e) => SubscribedDealModel.fromJson(e)).toList();
     } catch (e, s) {
@@ -29,7 +29,7 @@ class MyDealsService {
 
   Future<Map<String,dynamic>> getDashboard()async {
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/dashboard/${getLang()}");
+      final response = await _dio.get("/api/v1/investor/dashboard/${getLang()}");
       return response.data['data'];
     } catch (e, s) {
       log("$e $s");

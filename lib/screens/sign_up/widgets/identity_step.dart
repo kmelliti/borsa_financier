@@ -81,7 +81,10 @@ class _IdentityStepState extends State<IdentityStep> {
               return InkWell(
                 onTap: () async {
                   FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                      await FilePicker.pickFiles(
+                        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+                        type: FileType.custom,
+                      );
 
                   if (result != null) {
                     File file = File(result.files.single.path!);

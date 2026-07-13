@@ -11,10 +11,9 @@ import '../../../../core/routes/app_routes.dart';
 import '../manager/my_account_controller.dart';
 import 'edit_bank_info.dart';
 
-
-
 class BankInfo extends StatelessWidget {
-   BankInfo({super.key});
+  BankInfo({super.key});
+
   final ValueNotifier<List<BankAccountModel>> accounts = ValueNotifier([]);
   final MyAccountController controller = getIt();
   final ValueNotifier<bool> toggle = ValueNotifier(false);
@@ -22,7 +21,7 @@ class BankInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context,true),
+      appBar: buildAppBar(context, true),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -38,28 +37,29 @@ class BankInfo extends StatelessWidget {
                     Text(
                       "bank_info".tr,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.black,
-                          ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black,
+                      ),
                     ),
                     Spacer(),
                     bounceAnimation(
                       c: InkWell(
-                        onTap: ()async{
-
-                          try{
-                          await  showModalBottomSheet(
-                                showDragHandle: true,
-                                isScrollControlled: true,
-                                context: context, builder: (c){
-                              return AddEditBankInfo();
-                            });
+                        onTap: () async {
+                          try {
+                           var res =  await showModalBottomSheet(
+                              showDragHandle: true,
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (c) {
+                                return AddEditBankInfo();
+                              },
+                            );
+                           if(res == null) return;
                             toggle.value = !toggle.value;
-                          }catch(e){
+                          } catch (e) {
                             handleException(context, e);
                           }
-
                         },
                         child: Container(
                           padding: EdgeInsets.all(5),
@@ -75,7 +75,7 @@ class BankInfo extends StatelessWidget {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -83,126 +83,131 @@ class BankInfo extends StatelessWidget {
 
               ValueListenableBuilder(
                 valueListenable: toggle,
-                builder: (context,_,__) {
-                  return FutureBuilder(future: controller.getBankAccounts(), builder: (c,snap){
-                    if(snap.connectionState == ConnectionState.waiting){
-                      return Center(
-                        child: getLoader(),
-                      );
-                    }
-                    print("Data is ${snap.data}");
-                    if(snap.connectionState == ConnectionState.done){
-
-                    }
-                    if(snap.connectionState == ConnectionState.done && !snap.hasError ){
-                      accounts.value = snap.data!;
-                      if(accounts.value.isEmpty){
-                        return Center(
-                          child: Text("no_data".tr),
-                        );
+                builder: (context, _, __) {
+                  return FutureBuilder(
+                    future: controller.getBankAccounts(),
+                    builder: (c, snap) {
+                      if (snap.connectionState == ConnectionState.waiting) {
+                        return Center(child: Padding(
+                          padding: const EdgeInsets.only(top: 80.0),
+                          child: getLoader(),
+                        ));
                       }
+                      print("Data is ${snap.data}");
+                      if (snap.connectionState == ConnectionState.done) {}
+                      if (snap.connectionState == ConnectionState.done &&
+                          !snap.hasError) {
+                        accounts.value = snap.data!;
+                        if (accounts.value.isEmpty) {
+                          return Center(child: Padding(
+                            padding: const EdgeInsets.only(top: 80.0),
+                            child: Text("no_bank_add_bank".tr),
+                          ));
+                        }
 
-                      return ValueListenableBuilder(valueListenable: accounts, builder: (_,list,_){
-                        return ListView.builder(
-                            itemCount: list.length,
-                            shrinkWrap: true,
-                            itemBuilder: (c,i){
-                              return Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset("assets/icons/bank.svg"),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          "account_info".tr,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: HexColor.fromHex(AppTheme.primaryColor),
+                        return ValueListenableBuilder(
+                          valueListenable: accounts,
+                          builder: (_, list, _) {
+                            return ListView.builder(
+                              itemCount: list.length,
+                              shrinkWrap: true,
+                              itemBuilder: (c, i) {
+                                return Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "assets/icons/bank.svg",
                                           ),
-                                        ),
-                                        Spacer(),
-                                        InkWell(
-                                          onTap: ()async{
-                                            try{
-                                              await  showModalBottomSheet(
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "account_info".tr,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              // color: HexColor.fromHex(
+                                              //   // AppTheme.primaryColor,
+                                              // ),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          InkWell(
+                                            onTap: () async {
+                                              try {
+                                               var res = await showModalBottomSheet(
                                                   showDragHandle: true,
                                                   isScrollControlled: true,
-                                                  context: context, builder: (c){
-                                                return AddEditBankInfo(bankAccount: list[i],);
-                                              });
-                                              toggle.value = !toggle.value;
-                                            }catch(e){
-                                              handleException(context, e);
-                                            }
-
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.edit),
+                                                  context: context,
+                                                  builder: (c) {
+                                                    return AddEditBankInfo(
+                                                      bankAccount: list[i],
+                                                    );
+                                                  },
+                                                );
+                                               if(res == null) return;
+                                                toggle.value = !toggle.value;
+                                              } catch (e) {
+                                                handleException(context, e);
+                                              }
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: Icon(Icons.edit),
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      banks.firstWhere((element) => element.id == list[i].bankId).name,
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        color: HexColor.fromHex(AppTheme.primaryColor),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-
-                                    Text(
-                                      list[i].accountNumber,
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        color: HexColor.fromHex(AppTheme.primaryColor),
-
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        banks
+                                            .firstWhere(
+                                              (element) =>
+                                                  element.id == list[i].bankId,
+                                            )
+                                            .name,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          // color: HexColor.fromHex(
+                                          //   AppTheme.primaryColor,
+                                          // ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              return ListTile(
+                                      const SizedBox(height: 10),
 
-                                title: Text(banks.firstWhere((element) => element.id == list[i].bankId).name),
-                                subtitle: Text(list[i].accountNumber),
-                                trailing: InkWell(
-                                  onTap: ()async{
-                                    try{
-                                      await  showModalBottomSheet(
-                                      showDragHandle: true,
-                                      isScrollControlled: true,
-                                      context: context, builder: (c){
-                                        return AddEditBankInfo(bankAccount: list[i],);
-                                      });
-                                      toggle.value = !toggle.value;
-                                    }catch(e){
-                                      handleException(context, e);
-                                    }
-
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(Icons.edit),
+                                      Text(
+                                        "SA ${list[i].accountNumber}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          // color: HexColor.fromHex(
+                                          //   AppTheme.primaryColor,
+                                          // ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              );
-                        }, );
-                      });
-                    }
-                    return Container();
-                  });
-                }
-              )
+                                );
+
+                              },
+                            );
+                          },
+                        );
+                      }
+                      return Container();
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -210,7 +215,11 @@ class BankInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, {required String label, required String value}) {
+  Widget _buildInfoRow(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -230,17 +239,17 @@ class BankInfo extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: HexColor.fromHex("#717088"),
-                  fontSize: 14,
-                ),
+              color: HexColor.fromHex("#717088"),
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: HexColor.fromHex(AppTheme.primaryColor),
-                  fontWeight: FontWeight.w600,
-                ),
+              color: HexColor.fromHex(AppTheme.primaryColor),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

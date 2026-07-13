@@ -24,7 +24,7 @@ class AccountCreationParams {
   String? idNumber;
   String? idDocumentPath;
   String? accountNumber;
-  String? ibanNumber;
+
   String? picture;
   String? gender;
   int? bankId;
@@ -46,7 +46,7 @@ class AccountCreationParams {
     this.idNumber,
     this.idDocumentPath,
     this.accountNumber,
-    this.ibanNumber,
+
     this.picture,
     this.gender,
     this.bankId,
@@ -78,7 +78,7 @@ class AccountCreationParams {
     "email": email,
     "phone": phone,
     "password": password,
-    "birthday": birthday,
+    "birthdate": birthday,
     "postal_code": postalCode,
     "city_id": cityId,
     "building_number": buildingNumber,
@@ -88,7 +88,7 @@ class AccountCreationParams {
     "id_number": idNumber,
     "id_document_path": idDocumentPath,
     "account_number": accountNumber,
-    "iban_number": ibanNumber,
+   "iban_number": 00000000000,
     "picture": picture,
     "gender": gender,
     "bank_id": bankId,

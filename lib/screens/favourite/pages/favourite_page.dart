@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:image_color_builder/image_color_builder.dart';
 
 import '../../../../core/config/utils.dart';
 import '../../../core/config/app_constants.dart';
@@ -170,37 +169,22 @@ class _MyFavouritesState extends State<MyFavourites> {
   Widget buildImageColorBuilder(int index) {
     return Stack(
       children: [
-        ImageColorBuilder(
-          url: "$baseUrlImage/${favs[index].product.productPictures.first.picture}",
-          placeholder: (c,s) {
-            return Container(
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                color: HexColor.fromHex("#F4F4F4"),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
-              ),
-            );
-          },
-          builder: (c, image, color) {
-            return Container(
-              height: 150,
-              width: 150,
+        Container(
+          height: 150,
+          width: 150,
 
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: HexColor.fromHex("#F4F4F4")),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: HexColor.fromHex("#F4F4F4")),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
 
-                child: Center(child: image),
-              ),
-            );
-          },
+            child: Center(child: Image.network( "$baseUrlImage/${favs[index].product.productPictures.first.picture}")),
+          ),
         ),
+
         Positioned(
           top: 10,
           right: 10,

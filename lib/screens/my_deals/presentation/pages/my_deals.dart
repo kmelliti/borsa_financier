@@ -185,6 +185,14 @@ class _MyDealsState extends State<MyDeals> {
 
                   fetchNextPage: fetchNextPage,
                   builderDelegate: PagedChildBuilderDelegate(
+                    noItemsFoundIndicatorBuilder: (_){
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 80.0),
+                          child: Text("no_data".tr),
+                        ),
+                      );
+                    },
                     animateTransitions: true,
                     itemBuilder: (context, item, index) => Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
@@ -289,6 +297,12 @@ class _MyDealsState extends State<MyDeals> {
                                   _pagingController.refresh();
                                 }
                               },
+                              onSubmitted: (v){
+                                filters.value = {
+                                  "product_name": searchController.text,
+                                };
+                                _pagingController.refresh();
+                              },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
 
@@ -325,40 +339,41 @@ class _MyDealsState extends State<MyDeals> {
                   ),
                 ),
                 SizedBox(width: 10),
-                GestureDetector(
-                  onTapDown: (details) {
-                    // This will be used for the tap effect
-                  },
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 1.0, end: 0.0),
-                    duration: Duration(milliseconds: 1500),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: 1.0 + (value * 0.1),
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: HexColor.fromHex(AppTheme.filledBox),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: HexColor.fromHex(AppTheme.borderGrey),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: HexColor.fromHex(
-                                  AppTheme.primaryColor,
-                                ).withOpacity(0.2 * (1 - value)),
-                                spreadRadius: 2 * (1 - value),
-                                blurRadius: 6 * (1 - value),
-                              ),
-                            ],
-                          ),
-                          child: SvgPicture.asset("assets/icons/filters.svg"),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                // GestureDetector(
+                //   onTapDown: (details) {
+                //     // This will be used for the tap effect
+                //
+                //   },
+                //   child: TweenAnimationBuilder<double>(
+                //     tween: Tween(begin: 1.0, end: 0.0),
+                //     duration: Duration(milliseconds: 1500),
+                //     builder: (context, value, child) {
+                //       return Transform.scale(
+                //         scale: 1.0 + (value * 0.1),
+                //         child: Container(
+                //           padding: EdgeInsets.all(15),
+                //           decoration: BoxDecoration(
+                //             color: HexColor.fromHex(AppTheme.filledBox),
+                //             shape: BoxShape.circle,
+                //             border: Border.all(
+                //               color: HexColor.fromHex(AppTheme.borderGrey),
+                //             ),
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: HexColor.fromHex(
+                //                   AppTheme.primaryColor,
+                //                 ).withOpacity(0.2 * (1 - value)),
+                //                 spreadRadius: 2 * (1 - value),
+                //                 blurRadius: 6 * (1 - value),
+                //               ),
+                //             ],
+                //           ),
+                //           child: SvgPicture.asset("assets/icons/filters.svg"),
+                //         ),
+                //       );
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),

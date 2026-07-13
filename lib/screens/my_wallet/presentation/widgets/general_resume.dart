@@ -153,7 +153,7 @@ class _GeneralResumeState extends State<GeneralResume> {
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: HexColor.fromHex(AppTheme.primaryColor),
+
                 fontSize: 20,
               ),
             ),

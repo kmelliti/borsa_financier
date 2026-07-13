@@ -190,24 +190,24 @@ class _PasswordPageState extends State<PasswordPage> {
                       ),
                       const SizedBox(height: 30),
 
-                      // Save Button
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            // TODO: Implement password change functionality
-                            Get.back();
-                          }
-                        },
-                        style: AppTheme.outlinedButtonStyle,
-                        child: Text(
-                          "forgot_password".tr,
-                          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                      ),
+                      // // Save Button
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     if (_formKey.currentState?.validate() ?? false) {
+                      //       // TODO: Implement password change functionality
+                      //       Get.back();
+                      //     }
+                      //   },
+                      //   style: AppTheme.outlinedButtonStyle,
+                      //   child: Text(
+                      //     "forgot_password".tr,
+                      //     style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      //           color: HexColor.fromHex(AppTheme.primaryColor),
+                      //           fontSize: 16,
+                      //           fontWeight: FontWeight.w700,
+                      //         ),
+                      //   ),
+                      // ),
                       Spacer(),
 
 

@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:ffi';
 
+import 'package:borsa_now_bis/core/config/utils.dart';
 import 'package:borsa_now_bis/core/routes/app_routes.dart';
+import 'package:borsa_now_bis/core/theme/app_theme.dart';
 import 'package:borsa_now_bis/screens/home_page/presentation/pages/home_page.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/pages/my_account.dart';
 import 'package:borsa_now_bis/screens/my_account/presentation/widgets/bank_info.dart';
@@ -66,11 +68,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Image.asset(
-          "assets/0484aab0c5a24014f17a6bf62f729f73711ad0ed.gif",
-          height: 500,
-          fit: BoxFit.cover,
+      body: Container(
+        color: HexColor.fromHex(AppTheme.primaryColor),
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: Image.asset(
+            "assets/borsa_orange.gif",
+
+            height: MediaQuery.of(context).size.height,
+
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

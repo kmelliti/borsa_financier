@@ -16,6 +16,7 @@ class DealProductModel {
   int quantitySold;
   String wholesalePrice;
   String retailPrice;
+  String storePrice;
   String minInvestment;
   String totalInvested;
   String targetAmount;
@@ -55,6 +56,7 @@ class DealProductModel {
     required this.updatedAt,
     required this.isFavorite,
     required this.product,
+    required this.storePrice,
   });
 
   factory DealProductModel.fromJson(Map<String, dynamic> json) => DealProductModel(
@@ -64,6 +66,7 @@ class DealProductModel {
     quantity: json["quantity"],
     quantitySold: json["quantity_sold"],
     wholesalePrice: json["wholesale_price"],
+    storePrice: json["store_price"],
     retailPrice: json["retail_price"],
     minInvestment: json["min_investment"],
     totalInvested: json["total_invested"],
@@ -105,6 +108,7 @@ class DealProductModel {
     "updated_at": updatedAt.toIso8601String(),
     "is_favorite": isFavorite,
     "product": product.toJson(),
+    "store_price": storePrice,
   };
 }
 

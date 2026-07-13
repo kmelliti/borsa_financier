@@ -16,9 +16,11 @@ class HomePageService {
     int page = pageKey;
 
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?page=$page",queryParameters: value);
+      final response = await _dio.get("/api/v1/investor/deals/${getLang()}?page=$page",queryParameters: value);
       log("response filters for ${value} page key ${pageKey} ${(response.data['data']['data'] as List).length}");
-      return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
+      List<DealProductModel> list = (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
+      list.removeWhere((test)=>test.quantitySold >= test.quantity);
+      return list;
     } catch (e, s) {
       log("$e $s");
       throw e;
@@ -27,7 +29,7 @@ class HomePageService {
 
   Future<List<DealProductModel>> getRelatedDeals(int dealId) async {
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/deals/${getLang()}?id=$dealId");
+      final response = await _dio.get("/api/v1/investor/deals/${getLang()}?id=$dealId");
       return (response.data['data']['data'] as List).map((e) => DealProductModel.fromJson(e)).toList();
     } catch (e, s) {
       log("$e $s");
@@ -37,7 +39,7 @@ class HomePageService {
 
   Future<ReviewResponseModel> getReviews(String productId) async {
     try {
-      final response = await _dio.get("/BorsaNow/public/api/v1/investor/products/rates/${getLang()}",queryParameters: {
+      final response = await _dio.get("/api/v1/investor/products/rates/${getLang()}",queryParameters: {
         "product_id":productId
       });
       log("${response.data}");
@@ -49,7 +51,7 @@ class HomePageService {
   }
   Future<ReviewModel> addReview (List<String?> images , Map<String,dynamic> params) async {
     try {
-      final response = await _dio.post("/BorsaNow/public/api/v1/investor/products/rate/add/${getLang()}",data: params);
+      final response = await _dio.post("/api/v1/investor/products/rate/add/${getLang()}",data: params);
       if (response.data["result"] == false) {
         throw ApiException(response.data["message"]);
       }
@@ -62,7 +64,7 @@ class HomePageService {
   }
   Future<void> addDeleteFav ( Map<String,dynamic> params) async {
     try {
-      final response = await _dio.post("/BorsaNow/public/api/v1/investor/deal/favorite/toggle/${getLang()}",data: params);
+      final response = await _dio.post("/api/v1/investor/deal/favorite/toggle/${getLang()}",data: params);
       if (response.data["result"] == false) {
         throw ApiException(response.data["message"]);
       }
@@ -75,8 +77,12 @@ class HomePageService {
   }
 
   Future<void> subscribedToDeal (Map<String,dynamic> params)async {
+
+    print("Params ${params}");
+
     try {
-      final response = await _dio.post("/BorsaNow/public/api/v1/investor/deal/subscribe/${getLang()}",data: params);
+      final response = await _dio.post("/api/v1/investor/deal/subscribe/${getLang()}",data: params);
+
       if (response.data["result"] == false) {
         throw ApiException(response.data["message"]);
       }

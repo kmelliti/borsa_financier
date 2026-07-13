@@ -1,4 +1,9 @@
+import 'package:borsa_now_bis/core/models/my_request_fund_model.dart';
+import 'package:borsa_now_bis/core/routes/app_routes.dart';
+
+import '../../../../core/config/app_constants.dart';
 import '../../../../core/models/chart_sales_model.dart';
+import '../../../../core/models/funding_entity_model.dart';
 import '../../../../core/services/my_wallet_services.dart';
 
 import 'package:flutter/material.dart';
@@ -19,9 +24,18 @@ class MyWalletController {
   Future<void> withdrawRequest(Map<String,dynamic> params )async {
     return myWalletServices.withdrawRequest(params);
   }
+  Future<void> addFundRequest(Map<String,dynamic> params )async {
+    return myWalletServices.addFundRequest(params);
+  }
 
   Future<List<ChartSalesModel>> getStats(String year, String month) async {
     return myWalletServices.getStats(year, month);
+  }
+  Future<List<FundingEntityModel>> getFundingEntities() async {
+    return myWalletServices.getFundingEntities();
+  }
+  Future<List<MyRequestFundModel>> getMyFundRequests(int page) async {
+    return myWalletServices.getMyFundRequests(page);
   }
 
 
@@ -57,6 +71,11 @@ class MyWalletController {
               ),),
               SizedBox(height: 30,),
               ElevatedButton(onPressed: (){
+
+                Get.offNamed(AppRoutes.mainScreen,arguments: 1);
+
+
+
 
               }, child: Text("follow_requests".tr),style: AppTheme.outlinedButtonStyle,)
             ],

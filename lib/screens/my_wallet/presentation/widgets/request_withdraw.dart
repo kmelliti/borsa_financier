@@ -100,7 +100,10 @@ class WithdrawRequestPage extends StatelessWidget {
                       !snap.hasError) {
                     List<BankAccountModel> list = snap.data!;
                     if (list.isEmpty) {
-                      return Center(child: Text("no_data".tr));
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text("no_bank_add_bank".tr),
+                      ));
                     }
 
                     return ValueListenableBuilder(
